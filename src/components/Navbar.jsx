@@ -6,7 +6,8 @@ import Swal from 'sweetalert2'
 import Loading from './Loading';
 
 const Navbar = () => {
-  const { user, logout, loading ,setLoading, setUser} = use(AuthContext)
+  const { user, logout, loading ,setLoading, setUser, role} = use(AuthContext)
+  console.log(role)
 
   const handleSignOut = () => {
     

@@ -1,111 +1,136 @@
-import React, { useState, useEffect } from "react";
+// src/pages/Dashboard/Admin/ContentManagement.jsx
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import Swal from "sweetalert2";
+import Loading from "../../../components/Loading";
 
-const ContentManagement = () => {
-  const navigate = useNavigate();
+const ContentManagement = ({ userEmail }) => {
   const [blogs, setBlogs] = useState([]);
-  const [filterStatus, setFilterStatus] = useState(""); // "", "draft", "published"
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
+  const navigate = useNavigate();
+
+  // Fetch blogs
+  const fetchBlogs = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("http://localhost:3000/api/blogs");
+      setBlogs(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchBlogs();
-  }, [filterStatus]);
-
-  const fetchBlogs = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/admin/blogs", {
-        params: filterStatus ? { status: filterStatus } : {},
-      });
-      setBlogs(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleStatusChange = async (id, newStatus) => {
-    try {
-      await axios.put(`/api/admin/blogs/${id}/status`, { status: newStatus });
-      fetchBlogs();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this blog?")) return;
-    try {
-      await axios.delete(`/api/admin/blogs/${id}`);
-      fetchBlogs();
-    } catch (err) {
-      console.error(err);
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await axios.delete(`http://localhost:3000/api/blogs/${id}`);
+        setBlogs(blogs.filter((b) => b._id !== id));
+        Swal.fire("Deleted!", "Blog has been deleted.", "success");
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error!", "Failed to delete blog.", "error");
+      }
     }
   };
 
+  const handlePublishToggle = async (id, currentStatus) => {
+    try {
+      const newStatus = currentStatus === "draft" ? "published" : "draft";
+      await axios.put(`http://localhost:3000/api/blogs/${id}/status`, { status: newStatus });
+      setBlogs(
+        blogs.map((b) => (b._id === id ? { ...b, status: newStatus } : b))
+      );
+      Swal.fire("Success!", `Blog is now ${newStatus}`, "success");
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error!", "Failed to update blog status.", "error");
+    }
+  };
+
+  if (loading) return <Loading />;
+
+  // Filter blogs
+  const filteredBlogs =
+    filter === "all" ? blogs : blogs.filter((b) => b.status === filter);
+
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-700">Content Management</h2>
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Content Management</h2>
         <button
-          className="btn btn-primary"
           onClick={() => navigate("/dashboard/content-management/add-blog")}
+          className="btn btn-primary"
         >
           Add Blog
         </button>
       </div>
 
-      {/* Filter */}
-      <div className="mb-4 flex items-center gap-4">
-        <label className="font-semibold">Filter by Status:</label>
+      <div className="mb-4">
         <select
-          className="select select-bordered"
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          className="select select-bordered w-full max-w-xs"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
         >
-          <option value="">All</option>
+          <option value="all">All</option>
           <option value="draft">Draft</option>
           <option value="published">Published</option>
         </select>
       </div>
 
-      {/* Blogs List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {blogs.map((blog) => (
-          <div key={blog._id} className="card bg-white shadow-md rounded-lg">
-            {blog.thumbnail && (
-              <figure>
-                <img src={blog.thumbnail} alt={blog.title} className="h-40 w-full object-cover rounded-t-lg" />
-              </figure>
-            )}
-            <div className="card-body">
-              <h3 className="card-title">{blog.title}</h3>
-              <p className="text-sm text-gray-500 mb-2">Status: {blog.status}</p>
-              <div className="card-actions justify-between">
-                {blog.status === "draft" && (
+      <div className="overflow-x-auto">
+        <table className="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Thumbnail</th>
+              <th>Status</th>
+              <th>Created By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredBlogs.map((blog) => (
+              <tr key={blog._id}>
+                <td>{blog.title}</td>
+                <td>
+                  <img src={blog.thumbnail} alt="thumb" className="w-20 h-14 object-cover rounded" />
+                </td>
+                <td>{blog.status}</td>
+                <td>{blog.author.email}</td>
+                <td className="flex gap-2">
                   <button
-                    className="btn btn-success btn-sm"
-                    onClick={() => handleStatusChange(blog._id, "published")}
+                    className="btn btn-sm btn-success"
+                    onClick={() => handlePublishToggle(blog._id, blog.status)}
                   >
-                    Publish
+                    {blog.status === "draft" ? "Publish" : "Unpublish"}
                   </button>
-                )}
-                {blog.status === "published" && (
                   <button
-                    className="btn btn-warning btn-sm"
-                    onClick={() => handleStatusChange(blog._id, "draft")}
+                    className="btn btn-sm btn-error"
+                    onClick={() => handleDelete(blog._id)}
                   >
-                    Unpublish
+                    Delete
                   </button>
-                )}
-                <button
-                  className="btn btn-error btn-sm"
-                  onClick={() => handleDelete(blog._id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

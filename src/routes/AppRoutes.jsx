@@ -34,6 +34,7 @@ import PrivacyPolicy from '../pages/public/Privacy';
 import TermsOfService from '../pages/public/TermsofService';
 import PrivateRouteAll from '../PrivateRoute/PrivateRouteAll';
 import IsAdmin from '../PrivateRoute/IsAdmin';
+import AddBlog from '../pages/Blog/Addblog';
 
 // // Dashboard – Admin
 
@@ -109,6 +110,7 @@ const AppRoutes = createBrowserRouter([
       { path: 'all-users', Component: AllUsers },
       { path: 'all-blood-donation-request', Component: AllBloodDonationRequests },
       { path: 'content-management', Component: ContentManagement },
+      { path: 'content-management/add-blog', Component: AddBlog },
 
       //       // Volunteer
       //       { path: 'volunteer', Component: VolunteerHome },

@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const AllBloodDonationRequests = () => {
   const [requests, setRequests] = useState([]);
   const [filterStatus, setFilterStatus] = useState(""); // "", "pending", "inprogress", "done", "canceled"
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage] = useState(10);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/donation-requests"); // backend API to get all donation requests
+        const res = await axios.get("http://localhost:3000/api/donation-requests"); // backend API to get all donation requests
         setRequests(res.data);
       } catch (err) {
         console.error(err);
@@ -22,22 +25,34 @@ const AllBloodDonationRequests = () => {
 
   // Action handlers
   const handleStatusChange = async (id, newStatus) => {
-    try {
-      await axios.put(`http://localhost:3000/api/donation-requests/${id}/status`, { status: newStatus });
-      setRequests(requests.map(r => r._id === id ? { ...r, status: newStatus } : r));
+     try {
+      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus });
+      setRequests(requests.map(r => r._id === requestId ? r.status = newStatus: r));
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this donation request?")) return;
-    try {
-      await axios.delete(`/api/donation-requests/${id}`);
-      setRequests(requests.filter(r => r._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`http://localhost:3000/api/donation-requests/${id}`);
+        setRequests(requests.filter(r => r._id !== id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
   };
 
   const filteredRequests = filterStatus ? requests.filter(r => r.status === filterStatus) : requests;
@@ -119,7 +134,7 @@ const AllBloodDonationRequests = () => {
                   {/* Edit & Delete */}
                   <button
                     className="btn btn-warning btn-sm"
-                    onClick={() => window.location.href = `/dashboard/edit-donation-request/${req._id}`}
+                    onClick={() => navigate(`/dashboard/donation-request/edit/${req._id}`)}
                   >
                     Edit
                   </button>

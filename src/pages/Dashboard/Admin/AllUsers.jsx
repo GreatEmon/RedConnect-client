@@ -11,7 +11,7 @@ const AllUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/users"); // Your backend endpoint
+        const res = await axios.get("http://localhost:3000/api/usersall"); // Your backend endpoint
         setUsers(res.data);
       } catch (err) {
         console.error(err);
@@ -23,7 +23,7 @@ const AllUsers = () => {
 
   const handleBlock = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/admin/users/block?email=${email}`);
+      await axios.put(`http://localhost:3000/api/block?email=${email}`);
       setUsers(users.map(u => u.email === email ? { ...u, status: "blocked" } : u));
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ const AllUsers = () => {
 
   const handleUnblock = async (email) => {
     try {
-      await axios.put(`/api/admin/users/unblock?email=${email}`);
+      await axios.put(`http://localhost:3000/api/unblock?email=${email}`);
       setUsers(users.map(u => u.email === email ? { ...u, status: "active" } : u));
     } catch (err) {
       console.error(err);
@@ -41,7 +41,7 @@ const AllUsers = () => {
 
   const handleMakeVolunteer = async (email) => {
     try {
-      await axios.put(`/api/admin/users/role?email=${email}&role=volunteer`);
+      await axios.put(`http://localhost:3000/api/role?email=${email}&role=volunteer`);
       setUsers(users.map(u => u.email === email ? { ...u, role: "volunteer" } : u));
     } catch (err) {
       console.error(err);
@@ -50,7 +50,7 @@ const AllUsers = () => {
 
   const handleMakeAdmin = async (email) => {
     try {
-      await axios.put(`/api/admin/users/role?email=${email}&role=admin`);
+      await axios.put(`http://localhost:3000/api/role?email=${email}&role=admin`);
       setUsers(users.map(u => u.email === email ? { ...u, role: "admin" } : u));
     } catch (err) {
       console.error(err);

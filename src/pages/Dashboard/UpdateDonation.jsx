@@ -42,7 +42,7 @@ const CreateDonationRequest = () => {
     useEffect(() => {
         if (formData.recipientDistrict) {
             const selectedDistrict = districts.find(d => d.name === formData.recipientDistrict);
-            const filteredUpazilas = upazilasData.filter(u => u.district_id == selectedDistrict.id);
+            const filteredUpazilas = upazilasData.filter(u => u.district_id == selectedDistrict?.id);
             setUpazilas(filteredUpazilas);
         } else {
             setUpazilas([]);
@@ -53,7 +53,8 @@ const CreateDonationRequest = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {xx
+    const handleSubmit = async (e) => {
+        console.log(formData)
         e.preventDefault();
 
         // if(currentUser.status === 'blocked'){
@@ -63,11 +64,11 @@ const CreateDonationRequest = () => {
 
         try {
             const res = await axios.patch(`http://localhost:3000/api/donation-requests/${id}`, formData);
-            console.log(res)
+  
             if (res.data.success) {
                 Swal.fire({
                     title: "Good job!",
-                    text: "Modified Successfully!",
+                    text: "Added Successfully!",
                     icon: "success"
                 });
             }

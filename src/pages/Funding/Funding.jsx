@@ -1,128 +1,170 @@
-import React, { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-// import { Modal } from 'react-daisyui';
+import React, { useState, useEffect } from "react";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutForm from "./CheckoutForm";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { use } from "react";
+import {AuthContext} from '../../context/AuthProvider'
 
-// Mock data for funds
-const mockFunds = [
-  { id: 1, name: 'Emon Sherkar', amount: 500, date: '2025-09-29' },
-  { id: 2, name: 'John Doe', amount: 300, date: '2025-09-28' },
-  { id: 3, name: 'Jane Smith', amount: 700, date: '2025-09-27' },
-  // Add more mock data as needed
-];
-
-const stripePromise = loadStripe('YOUR_STRIPE_PUBLIC_KEY');
-
-const CheckoutForm = ({ onClose }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [amount, setAmount] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
-
-    // Normally you would call your backend to create a Stripe PaymentIntent
-    alert(`Simulated payment of $${amount} successful!`);
-    onClose(); // close modal
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <label className="block font-semibold">Amount (BDT)</label>
-      <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Enter amount"
-        className="input input-bordered w-full"
-        required
-      />
-      <label className="block font-semibold">Card Details</label>
-      <div className="border p-2 rounded">
-        <CardElement />
-      </div>
-      <button type="submit" className="btn btn-primary w-full mt-4">
-        Pay
-      </button>
-    </form>
-  );
-};
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
 const Funding = () => {
-  const [funds] = useState(mockFunds);
-  const [modalOpen, setModalOpen] = useState(false);
+  const { user } = use(AuthContext); // { name, email }
+  const [amount, setAmount] = useState("");
+  const [clientSecret, setClientSecret] = useState("");
+  const [fundings, setFundings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Pagination
-  const totalPages = Math.ceil(funds.length / itemsPerPage);
-  const displayedFunds = funds.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // Load all fundings on component mount
+  const fetchFundings = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/fundings");
+      setFundings(res.data.fundings);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFundings();
+  }, []);
+
+  // Create PaymentIntent
+  const createPaymentIntent = async () => {
+    if (!amount || Number(amount) <= 0) {
+      return Swal.fire("Error", "Enter a valid amount", "error");
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: Number(amount) * 100 }),
+      });
+      const data = await res.json();
+      setClientSecret(data.clientSecret);
+
+
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Failed to create payment", "error");
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentIntentId) => {
+    try {
+      // Save funding info to backend
+      await axios.post("http://localhost:3000/api/fundings", {
+        userName: user.displayName,
+        userEmail: user.email,
+        amount: Number(amount),
+        paymentIntentId,
+        date: new Date(),
+      });
+
+      // Refresh table
+      fetchFundings();
+
+      // Clear payment
+      setAmount("");
+      setClientSecret("");
+
+      Swal.fire("Success", "Funding successful!", "success");
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Failed to save funding", "error");
+    }
+  };
+
+  // Pagination logic
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentFundings = fundings.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(fundings.length / itemsPerPage);
 
   return (
-    <div className="min-h-screen py-10 px-4 md:px-10 bg-red-50">
-      <h2 className="text-3xl font-bold text-center text-red-600 mb-6">Funding</h2>
+    <div className="max-w-4xl mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-6">Funding Page</h2>
 
-      <div className="flex justify-end mb-4">
-        <button
-          className="btn btn-primary"
-          onClick={() => setModalOpen(true)}
-        >
-          Give Fund
-        </button>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="table w-full">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Amount (BDT)</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayedFunds.map((fund) => (
-              <tr key={fund.id}>
-                <td>{fund.name}</td>
-                <td>{fund.amount}</td>
-                <td>{fund.date}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-4">
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              className={`btn btn-sm ${currentPage === index + 1 ? 'btn-primary' : 'btn-outline'}`}
-              onClick={() => setCurrentPage(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
+      {/* Amount Input */}
+      {!clientSecret && (
+        <div className="flex gap-3 mb-6">
+          <input
+            type="number"
+            className="input input-bordered flex-1"
+            placeholder="Enter amount in USD"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <button className="btn btn-primary" onClick={createPaymentIntent}>
+            Proceed to Pay
+          </button>
         </div>
       )}
 
-      {/* Modal for Stripe Payment */}
-      {/* <Modal open={modalOpen} onClickBackdrop={() => setModalOpen(false)}>
-        <Modal.Header>
-          <h3 className="text-lg font-bold">Give Fund</h3>
-        </Modal.Header>
-        <Modal.Body>
-          <Elements stripe={stripePromise}>
-            <CheckoutForm onClose={() => setModalOpen(false)} />
-          </Elements>
-        </Modal.Body>
-      </Modal> */}
+      {/* Stripe Payment */}
+      {clientSecret && (
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+          <CheckoutForm
+            amount={amount}
+            user={user}
+            onSuccess={handlePaymentSuccess}
+          />
+        </Elements>
+      )}
+
+      {/* Fundings Table */}
+      <h3 className="text-xl font-semibold mt-10 mb-3">All Fundings</h3>
+      {loading ? (
+        <p>Loading...</p>
+      ) : fundings.length === 0 ? (
+        <p>No fundings yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Amount (USD)</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentFundings.map((f, index) => (
+                <tr key={f._id}>
+                  <td>{indexOfFirst + index + 1}</td>
+                  <td>{f.userName}</td>
+                  <td>{f.userEmail}</td>
+                  <td>{f.amount}</td>
+                  <td>{new Date(f.date).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Pagination */}
+          <div className="flex justify-center gap-2 mt-4">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+              <button
+                key={num}
+                className={`btn btn-sm ${
+                  num === currentPage ? "btn-primary" : "btn-outline"
+                }`}
+                onClick={() => setCurrentPage(num)}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
