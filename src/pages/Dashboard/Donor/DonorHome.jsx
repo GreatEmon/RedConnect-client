@@ -1,32 +1,31 @@
 import React, { use, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import axios from 'axios';
-// import ConfirmationModal from '../../components/ConfirmationModal'; // you can create this for delete confirmation
-import Loading from '../../../components/Loading';
 import { AuthContext } from '../../../context/AuthProvider';
 import Swal from 'sweetalert2';
+import Loading from '../../../components/Loading';
+import { useQuery } from "@tanstack/react-query";
 
 const DonorHome = () => {
   const navigate = useNavigate();
   const { user } = use(AuthContext)
-
-  const [requests, setRequests] = useState([]);
+  // const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteRequestId, setDeleteRequestId] = useState(null);
 
+
   // Fetch current user info and his donation requests
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userRes = await axios.get(`http://localhost:3000/api/recent?email=${user.email}`); // current logged in donor
-        setRequests(userRes.data);
-      } catch (err) {
-        console.error(err);
-        // navigate('/login');
-      }
-    };
-    fetchData();
-  }, []);
+
+  const { data: requests = [], isLoading, isError, error,refetch } = useQuery({
+    queryKey: ["recentRequests", user.email],  // key includes email for caching
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:3000/api/recent?email=${user.email}`
+      );
+      return res.data;
+    },
+    enabled: !!user?.email,  // only run if user email exists
+  });
 
   const handleDelete = (_id) => {
     Swal.fire({
@@ -40,7 +39,7 @@ const DonorHome = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await axios.delete(`http://localhost:3000/api/donation-requests/${_id}`);
-        setRequests(requests.filter(r => r._id !== _id));
+        refetch()
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
@@ -53,19 +52,19 @@ const DonorHome = () => {
   const handleStatusChange = async (requestId, newStatus) => {
     try {
       const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus });
-      setRequests(requests.map(r => r._id === requestId ? r.status = newStatus: r));
+      refetch();
     } catch (err) {
       console.error(err);
     }
   };
 
-
+  if(loading && !user.email) return <Loading></Loading>
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-red-100 p-6 rounded-lg shadow">
         <h2 className="text-2xl font-bold text-red-600">
-          Welcome back, {user?.displayName}!
+          Welcome back, {user.displayName}!
         </h2>
         {requests.length > 0 && (
           <p className="text-gray-700 mt-2">Here are your recent donation requests</p>)}
@@ -99,8 +98,8 @@ const DonorHome = () => {
                   <td>
                     {r.status === 'inprogress' && (
                       <div>
-                        <p>{user?.displayName}</p>
-                        <p>{user?.email}</p>
+                        <p>{r?.donorInfo?.name}</p>
+                        <p>{r?.donorInfo?.email}</p>
                       </div>
                     )}
                   </td>
@@ -158,16 +157,6 @@ const DonorHome = () => {
           </button>
         </div>
       )}
-
-      {/* Confirmation Modal for Delete */}
-      {/* {showDeleteModal && (
-        <ConfirmationModal
-          title="Delete Donation Request"
-          message="Are you sure you want to delete this request?"
-          onConfirm={handleDelete}
-          onCancel={() => setShowDeleteModal(false)}
-        />
-      )} */}
     </div>
   );
 };

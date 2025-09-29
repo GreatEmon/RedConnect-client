@@ -79,6 +79,10 @@ const AppRoutes = createBrowserRouter([
     Component: DashboardLayout,
     children: [
       // Shared
+      { 
+        index: true, 
+        Component: DonorHome 
+      },
       {
         path: 'profile',
         element: <PrivateRouteAll>
@@ -87,8 +91,10 @@ const AppRoutes = createBrowserRouter([
       },
 
       // Donor
-      { index: true, Component: DonorHome },
-      { path: 'my-donation-requests', Component: MyDonationRequests },
+      { 
+        path: 'my-donation-requests', 
+        Component: MyDonationRequests 
+      },
       { path: 'create-donation-request', Component: CreateDonationRequest },
       { path: 'donation-request/edit/:id', Component: UpdateDonation },
 

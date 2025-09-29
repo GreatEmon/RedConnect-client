@@ -53,8 +53,7 @@ const CreateDonationRequest = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        console.log(formData)
+    const handleSubmit = async (e) => {xx
         e.preventDefault();
 
         // if(currentUser.status === 'blocked'){
@@ -64,11 +63,11 @@ const CreateDonationRequest = () => {
 
         try {
             const res = await axios.patch(`http://localhost:3000/api/donation-requests/${id}`, formData);
-  
+            console.log(res)
             if (res.data.success) {
                 Swal.fire({
                     title: "Good job!",
-                    text: "Added Successfully!",
+                    text: "Modified Successfully!",
                     icon: "success"
                 });
             }

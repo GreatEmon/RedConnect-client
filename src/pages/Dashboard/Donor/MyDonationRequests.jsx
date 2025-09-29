@@ -13,7 +13,7 @@ const MyDonationRequests = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userRes = await axios.get(`http://localhost:3000/api/recent?email=${user.email}`); // current logged in donor
+        const userRes = await axios.get(`http://localhost:3000/api/recentall?email=${user.email}`); // current logged in donor
         setRequests(userRes.data);
       } catch (err) {
         console.error(err);
@@ -60,10 +60,8 @@ const MyDonationRequests = () => {
       {/* Welcome Section */}
       <div className="bg-red-100 p-6 rounded-lg shadow">
         <h2 className="text-2xl font-bold text-red-600">
-          Welcome back, {user?.displayName}!
+          All Donation Request
         </h2>
-        {requests.length > 0 && (
-          <p className="text-gray-700 mt-2">Here are your recent donation requests</p>)}
       </div>
 
       {/* Recent Donation Requests */}
@@ -142,27 +140,6 @@ const MyDonationRequests = () => {
         </div>
       )}
 
-      {/* View All Requests Button */}
-      {requests.length > 0 && (
-        <div className="flex justify-end">
-          <button
-            onClick={() => navigate('/dashboard/my-donation-requests')}
-            className="btn btn-primary"
-          >
-            View My All Requests
-          </button>
-        </div>
-      )}
-
-      {/* Confirmation Modal for Delete */}
-      {/* {showDeleteModal && (
-        <ConfirmationModal
-          title="Delete Donation Request"
-          message="Are you sure you want to delete this request?"
-          onConfirm={handleDelete}
-          onCancel={() => setShowDeleteModal(false)}
-        />
-      )} */}
     </div>
   );
 };
