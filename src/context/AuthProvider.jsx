@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInWithPopup, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import {app} from '../firebae.configue'
+import axios from "axios";
 
 export const AuthContext = createContext()
 export const auth = getAuth(app);
@@ -9,6 +10,7 @@ export const auth = getAuth(app);
 const AuthProvider = ({children}) => {
   const [user,setUser] = useState()
   const [loading,setLoading] = useState(true)
+  const [admin, setAdmin] = useState(false)
   
   const register = (email, password)=>{
      return createUserWithEmailAndPassword(auth, email, password)
@@ -26,6 +28,8 @@ const AuthProvider = ({children}) => {
     return updateProfile(auth.currentUser, updateData)
   }
 
+  
+
    useEffect(()=>{
      const unsubscribe =  onAuthStateChanged(auth,(user)=>{
           if (user) {
@@ -41,6 +45,9 @@ const AuthProvider = ({children}) => {
     },[])
 
 
+  
+
+
   const authData = {
       register,
       login,
@@ -49,7 +56,9 @@ const AuthProvider = ({children}) => {
       logout,
       loading,
       setLoading,
-      updateUser
+      updateUser,
+      admin,
+      setAdmin
   }
 
 

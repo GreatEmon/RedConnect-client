@@ -9,15 +9,13 @@ const AdminDashboard = () => {
     totalDonationRequests: 0,
   });
 
-  const [recentRequests, setRecentRequests] = useState([]);
 
   // Fetch dashboard data
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/dashboard-stats"); // Your backend endpoint
-        setStats(res.data.stats);
-        setRecentRequests(res.data.recentRequests); // optional recent donation requests
+        const res = await axios.get("http://localhost:3000/api/admin/dashboard-stats");
+        setStats(res.data);
       } catch (err) {
         console.error(err);
       }
@@ -62,7 +60,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Donation Requests Table */}
-      {recentRequests.length > 0 && (
+      {/* {recentRequests.length > 0 && (
         <div className="bg-white rounded-2xl shadow p-6">
           <h3 className="text-xl font-semibold mb-4">Recent Donation Requests</h3>
           <div className="overflow-x-auto">
@@ -96,7 +94,7 @@ const AdminDashboard = () => {
             </table>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -33,6 +33,7 @@ import Contact from '../pages/public/Contact';
 import PrivacyPolicy from '../pages/public/Privacy';
 import TermsOfService from '../pages/public/TermsofService';
 import PrivateRouteAll from '../PrivateRoute/PrivateRouteAll';
+import IsAdmin from '../PrivateRoute/IsAdmin';
 
 // // Dashboard – Admin
 
@@ -99,7 +100,12 @@ const AppRoutes = createBrowserRouter([
       { path: 'donation-request/edit/:id', Component: UpdateDonation },
 
       //       // Admin
-      { path: 'admin', Component: AdminDashboard },
+      { 
+        path: 'admin', 
+        element:<IsAdmin>
+          <AdminDashboard></AdminDashboard>
+        </IsAdmin>  
+      },
       { path: 'all-users', Component: AllUsers },
       { path: 'all-blood-donation-request', Component: AllBloodDonationRequests },
       { path: 'content-management', Component: ContentManagement },
