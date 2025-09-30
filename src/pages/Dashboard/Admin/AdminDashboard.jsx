@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaUsers, FaDonate, FaHandHoldingMedical } from "react-icons/fa";
 import axios from "axios";
+import {AuthContext} from '../../../context/AuthProvider'
+import Loading from '../../../components/Loading'
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -9,12 +11,19 @@ const AdminDashboard = () => {
     totalDonationRequests: 0,
   });
 
+  const {role, roleLoading, user} = use(AuthContext,)
+
 
   // Fetch dashboard data
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/dashboard-stats");
+        const res = await axios.get("http://localhost:3000/api/admin/dashboard-stats", {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
         setStats(res.data);
       } catch (err) {
         console.error(err);
@@ -24,10 +33,12 @@ const AdminDashboard = () => {
     fetchStats();
   }, []);
 
+  if(roleLoading) return <Loading></Loading>
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Welcome Section */}
-      <h2 className="text-3xl font-bold mb-6 text-gray-700">Welcome, Admin!</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-700">Welcome, {role === "admin " ? "Admin!" : "Volunteer!"}</h2>
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

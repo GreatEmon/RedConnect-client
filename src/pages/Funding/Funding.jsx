@@ -22,7 +22,12 @@ const Funding = () => {
   // Load all fundings on component mount
   const fetchFundings = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/fundings");
+      const res = await axios.get("http://localhost:3000/api/fundings", {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setFundings(res.data.fundings);
       setLoading(false);
     } catch (err) {
@@ -46,6 +51,11 @@ const Funding = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Number(amount) * 100 }),
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
       });
       const data = await res.json();
       setClientSecret(data.clientSecret);
@@ -66,6 +76,11 @@ const Funding = () => {
         amount: Number(amount),
         paymentIntentId,
         date: new Date(),
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
       });
 
       // Refresh table

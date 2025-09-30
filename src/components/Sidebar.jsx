@@ -18,13 +18,16 @@ const Sidebar = () => {
   useEffect(() => {
     if (user?.email) {
       setLoading(true);
-      axios
-        .get(`http://localhost:3000/role?email=${user.email}`)
+      axios.get(`http://localhost:3000/role?email=${user.email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      })
         .then((res) => {
-          console.log(res.data.role)
-          if(res.data.role === "admin"){
+          if (res.data.role === "admin") {
             setAdmin(1);
-          }else if(res.data.role === "volunteer"){
+          } else if (res.data.role === "volunteer") {
             setAdmin(2);
           }
           setLoading(false);
@@ -45,8 +48,8 @@ const Sidebar = () => {
           text: "Sign Out Successful!",
           icon: "success",
         });
-        setUser(null);
         navigate("/");
+        setUser(null);
         setLoading(false);
       })
       .catch((err) => console.log(err));
@@ -62,20 +65,25 @@ const Sidebar = () => {
     { to: "/dashboard/my-donation-requests", icon: <FaListAlt />, label: "My Requests" },
   ];
 
-  // Add admin-only links dynamically
-  // console.log(admin)
-  if (admin==1) {
+
+  if (admin == 1) {
     navItems = [
       { to: "/dashboard/stat", icon: <FaHome />, label: "Home" },
+      { to: "/dashboard/profile", icon: <FaUser />, label: "Profile" },
+      { to: "/dashboard/create-donation-request", icon: <FaPlusCircle />, label: "Create Request" },
       { to: "/dashboard/all-users", icon: <FaUser />, label: "All Users" },
       { to: "/dashboard/all-blood-donation-request", icon: <FaListAlt />, label: "All Requests" },
+      { to: "/dashboard/my-donation-requests", icon: <FaListAlt />, label: "My Requests" },
       { to: "/dashboard/content-management", icon: <FaPlusCircle />, label: "Content Management" }
     ];
   }
-  if (admin==2) {
+  if (admin == 2) {
     navItems = [
       { to: "/dashboard/stat", icon: <FaHome />, label: "Home" },
+      { to: "/dashboard/profile", icon: <FaUser />, label: "Profile" },
+      { to: "/dashboard/create-donation-request", icon: <FaPlusCircle />, label: "Create Request" },
       { to: "/dashboard/all-blood-donation-request", icon: <FaListAlt />, label: "All Requests" },
+      { to: "/dashboard/my-donation-requests", icon: <FaListAlt />, label: "My Requests" },
       { to: "/dashboard/content-management", icon: <FaPlusCircle />, label: "Content Management" }
     ];
   }
@@ -92,8 +100,7 @@ const Sidebar = () => {
               to={to}
               end
               className={({ isActive }) =>
-                `flex items-center gap-3 p-3 rounded-md transition-colors ${
-                  isActive ? "bg-red-500 text-white shadow-md" : "text-gray-700 hover:bg-red-100 hover:text-red-600"
+                `flex items-center gap-3 p-3 rounded-md transition-colors ${isActive ? "bg-red-500 text-white shadow-md" : "text-gray-700 hover:bg-red-100 hover:text-red-600"
                 }`
               }
             >
@@ -118,8 +125,7 @@ const Sidebar = () => {
                 to={to}
                 end
                 className={({ isActive }) =>
-                  `flex flex-col items-center px-4 py-2 rounded-md transition-colors ${
-                    isActive ? "bg-red-500 text-white" : "text-gray-600 hover:text-red-600 hover:bg-red-100"
+                  `flex flex-col items-center px-4 py-2 rounded-md transition-colors ${isActive ? "bg-red-500 text-white" : "text-gray-600 hover:text-red-600 hover:bg-red-100"
                   }`
                 }
               >

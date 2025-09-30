@@ -28,7 +28,6 @@ const AuthProvider = ({ children }) => {
   }
 
   const updateUser = (updateData) => {
-    
     return updateProfile(auth.currentUser, updateData)
   }
 
@@ -58,7 +57,12 @@ const AuthProvider = ({ children }) => {
     }
 
     // Simple fetch – no axios needed
-    fetch(`http://localhost:3000/role?email=${user.email}`)
+    fetch(`http://localhost:3000/role?email=${user.email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      })
       .then(res => res.json())
       .then(data => {
         setRole(data.role);        // "admin" | "volunteer" | "donor"

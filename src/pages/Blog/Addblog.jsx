@@ -59,7 +59,12 @@ const AddBlog = () => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:3000/api/blogs", newBlog);
+      await axios.post("http://localhost:3000/api/blogs", newBlog, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       Swal.fire("Success", "Blog created successfully!", "success");
       navigate("/dashboard/content-management");
     } catch (err) {

@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import districtsData from "../../data/districts.json";
 import upazilasData from "../../data/upazila.json";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { AuthContext } from "../../context/AuthProvider";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const SearchPage = () => {
+  const doc = new jsPDF();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [upazilasDataAll, setUpazilasDataAll] = useState([]);
@@ -16,6 +20,7 @@ const SearchPage = () => {
   });
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {user} = use(AuthContext)
 
   // Load district and upazila data
   useEffect(() => {
@@ -50,12 +55,47 @@ const SearchPage = () => {
           district: formData.district,
           upazila: formData.upazila,
         },
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
       });
       setDonors(res.data);
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
+  };
+
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Search Results", 14, 15);
+
+    const tableColumn = ["#", "Name", "Email", "Blood Group", "District", "Upazila"];
+    const tableRows = [];
+
+    donors.forEach((donor, index) => {
+      tableRows.push([
+        index + 1,
+        donor.name,
+        donor.email,
+        donor.bloodGroup,
+        donor.district,
+        donor.upazila,
+      ]);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+    });
+
+    doc.save("search_results.pdf");
   };
 
   return (
@@ -130,6 +170,13 @@ const SearchPage = () => {
 
         {donors.length > 0 && (
           <div className="overflow-x-auto">
+            <button
+              onClick={handleDownloadPDF}
+              className="btn btn-primary"
+              disabled={donors.length === 0}
+            >
+              Download Results as PDF
+            </button>
             <table className="table table-zebra w-full">
               <thead>
                 <tr>

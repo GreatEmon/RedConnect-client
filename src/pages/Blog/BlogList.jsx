@@ -13,7 +13,6 @@ const BlogList = () => {
     axios.get("http://localhost:3000/api/blogs").
     then(res =>{
       setBlogs(res.data)
-      console.log(res.data)
       setLoading(false)
     })
   },[])

@@ -17,7 +17,12 @@ const OnlyAdmin = ({ children }) => {
 
     const fetchRole = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/role?email=${user.email}`);
+        const res = await axios.get(`http://localhost:3000/role?email=${user.email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
         setRole(res.data.role);
       } catch (err) {
         console.error(err);

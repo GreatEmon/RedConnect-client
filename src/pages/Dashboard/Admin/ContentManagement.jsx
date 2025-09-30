@@ -11,13 +11,18 @@ const ContentManagement = ({ userEmail }) => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const navigate = useNavigate();
-  const {role, roleLoading} = use(AuthContext)
+  const {role, roleLoading, user} = use(AuthContext)
 
   // Fetch blogs
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/blogs");
+      const res = await axios.get("http://localhost:3000/api/blogs", {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setBlogs(res.data);
       setLoading(false);
     } catch (err) {
@@ -41,7 +46,12 @@ const ContentManagement = ({ userEmail }) => {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:3000/api/blogs/${id}`);
+        await axios.delete(`http://localhost:3000/api/blogs/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
         setBlogs(blogs.filter((b) => b._id !== id));
         Swal.fire("Deleted!", "Blog has been deleted.", "success");
       } catch (err) {
@@ -54,7 +64,12 @@ const ContentManagement = ({ userEmail }) => {
   const handlePublishToggle = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === "draft" ? "published" : "draft";
-      await axios.put(`http://localhost:3000/api/blogs/${id}/status`, { status: newStatus });
+      await axios.put(`http://localhost:3000/api/blogs/${id}/status`, { status: newStatus }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setBlogs(
         blogs.map((b) => (b._id === id ? { ...b, status: newStatus } : b))
       );

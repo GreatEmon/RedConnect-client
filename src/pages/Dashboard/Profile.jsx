@@ -18,11 +18,16 @@ const Profile = () => {
   const [upazilas, setUpazilas] = useState([]);
   const [upazilasData, setUpazilasData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = use(AuthContext)
+  const { user, updateUser } = use(AuthContext)
 
   useEffect(() => {
     // Fetch user data from backend
-    axios.get(`http://localhost:3000/api/users?email=${user.email}`).then((res) => {
+    axios.get(`http://localhost:3000/api/users?email=${user.email}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${user.accessToken}`
+      }
+    }).then((res) => {
       setFormData(res.data);
       setLoading(false);
     }, []);
@@ -50,7 +55,24 @@ const Profile = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const res = await axios.put(`http://localhost:3000/api/users?email=${user.email}`, formData);
+      updateUser({
+        displayName: formData.name
+      }).then(() => {
+      }).catch((error) => {
+        setLoading(false)
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong"
+        });
+      })
+
+      const res = await axios.put(`http://localhost:3000/api/users?email=${user.email}`, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       // update user info
       if (res.status === 200) {
         setEditable(false);

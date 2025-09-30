@@ -13,7 +13,12 @@ const MyDonationRequests = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userRes = await axios.get(`http://localhost:3000/api/recentall?email=${user.email}`); // current logged in donor
+        const userRes = await axios.get(`http://localhost:3000/api/recentall?email=${user.email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      }); // current logged in donor
         setRequests(userRes.data);
       } catch (err) {
         console.error(err);
@@ -34,7 +39,12 @@ const MyDonationRequests = () => {
       confirmButtonText: "Yes, delete it!"
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:3000/api/donation-requests/${_id}`);
+        await axios.delete(`http://localhost:3000/api/donation-requests/${_id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
         setRequests(requests.filter(r => r._id !== _id));
         Swal.fire({
           title: "Deleted!",
@@ -47,7 +57,12 @@ const MyDonationRequests = () => {
 
   const handleStatusChange = async (requestId, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus });
+      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setRequests(requests.map(r => r._id === requestId ? r.status = newStatus: r));
     } catch (err) {
       console.error(err);

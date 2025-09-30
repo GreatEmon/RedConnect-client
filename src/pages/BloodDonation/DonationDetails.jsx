@@ -14,7 +14,12 @@ const DonationDetails = () => {
     useEffect(() => {
         const fetchRequest = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/donation-requests/${id}`);
+                const res = await fetch(`http://localhost:3000/api/donation-requests/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bearer ${user.accessToken}`
+                    }
+                });
                 if (res.status === 401) {
                     // navigate("/login");
                     return;
@@ -35,7 +40,10 @@ const DonationDetails = () => {
         try {
             const res = await fetch(`http://localhost:3000/api/donation-requests/${id}/confirm`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${user.accessToken}`
+                },
                 body: JSON.stringify({
                     donorName: user.displayName,
                     donorEmail: user.email,
@@ -50,10 +58,10 @@ const DonationDetails = () => {
             }
             const updated = await res.json();
             Swal.fire({
-                    title: "Successful",
-                    text: updated.message,
-                    icon: "success"
-                });
+                title: "Successful",
+                text: updated.message,
+                icon: "success"
+            });
             // refresh data to show updated status
             setRequest((prev) => ({
                 ...prev,
@@ -63,10 +71,10 @@ const DonationDetails = () => {
         } catch (err) {
             console.error(err);
             Swal.fire({
-                    title: "Error",
-                    text: "Error confirming Donation",
-                    icon: "error"
-                });
+                title: "Error",
+                text: "Error confirming Donation",
+                icon: "error"
+            });
         } finally {
             setConfirming(false);
             navigate("/dashboard")

@@ -1,13 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { Link } from 'react-router';
 import Loading from '../../components/Loading';
 
 
 
-
 const DonationRequests = ({ user }) => {
-  const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [load, setLoad] = useState(true)
 

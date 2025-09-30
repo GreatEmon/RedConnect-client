@@ -10,12 +10,17 @@ const AllBloodDonationRequests = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage] = useState(10);
   const navigate = useNavigate()
-  const { role, roleLoading } = use(AuthContext)
+  const { role, roleLoading, user } = use(AuthContext)
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/donation-requestsall"); // backend API to get all donation requests
+        const res = await axios.get("http://localhost:3000/api/donation-requestsall", {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      }); // backend API to get all donation requests
         setRequests(res.data);
       } catch (err) {
         console.error(err);
@@ -26,10 +31,15 @@ const AllBloodDonationRequests = () => {
   }, []);
 
   // Action handlers
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = async (requestId, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus });
-      setRequests(requests.map(r => r._id === requestId ? r.status = newStatus : r));
+      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
+      setRequests(requests.filter(r => r._id === requestId ? r.status = newStatus: r));
     } catch (err) {
       console.error(err);
     }
@@ -54,7 +64,12 @@ const AllBloodDonationRequests = () => {
       confirmButtonText: "Yes, delete it!"
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:3000/api/donation-requests/${id}`);
+        await axios.delete(`http://localhost:3000/api/donation-requests/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
         setRequests(requests.filter(r => r._id !== id));
         Swal.fire({
           title: "Deleted!",
@@ -109,8 +124,8 @@ const AllBloodDonationRequests = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRequests.map((req) => (
-              <tr key={req._id}>
+            {currentRequests.map((req,index) => (
+              <tr key={index}>
                 <td>{req.recipientName}</td>
                 <td>{req.recipientDistrict}, {req.recipientUpazila}</td>
                 <td>{req.bloodGroup}</td>
@@ -163,7 +178,7 @@ const AllBloodDonationRequests = () => {
                   {/* View */}
                   <button
                     className="btn btn-info btn-sm"
-                    onClick={() => window.location.href = `/dashboard/donation-request-details/${req._id}`}
+                    onClick={() => window.location.href = `/donation/${req._id}`}
                   >
                     View
                   </button>

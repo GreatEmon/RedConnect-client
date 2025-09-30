@@ -33,9 +33,14 @@ const CreateDonationRequest = () => {
     useEffect(() => {
         setDistricts(districtsData);
         setUpazilasData(upazilasJSON);
-            axios.get(`http://localhost:3000/api/donation-requests/${id}`)
+        axios.get(`http://localhost:3000/api/donation-requests/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${user.accessToken}`
+            }
+        })
             .then(userRes => setFormData(userRes.data))
- 
+
             ;
     }, []);
 
@@ -54,21 +59,20 @@ const CreateDonationRequest = () => {
     };
 
     const handleSubmit = async (e) => {
-        console.log(formData)
         e.preventDefault();
 
-        // if(currentUser.status === 'blocked'){
-        //     setError('Your account is blocked. You cannot create donation requests.');
-        //     return;
-        // }
-
         try {
-            const res = await axios.patch(`http://localhost:3000/api/donation-requests/${id}`, formData);
-  
+            const res = await axios.patch(`http://localhost:3000/api/donation-requests/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${user.accessToken}`
+                }
+            });
+
             if (res.data.success) {
                 Swal.fire({
                     title: "Good job!",
-                    text: "Added Successfully!",
+                    text: "Updated Successfully!",
                     icon: "success"
                 });
             }
@@ -86,7 +90,7 @@ const CreateDonationRequest = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-red-50 py-10">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
-                <h2 className="text-2xl font-bold text-red-600 mb-6">Create Donation Request</h2>
+                <h2 className="text-2xl font-bold text-red-600 mb-6">Update Donation Request</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
 
                     {/* Requester Name & Email (read-only) */}

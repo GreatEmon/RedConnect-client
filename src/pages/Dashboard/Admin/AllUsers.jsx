@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import { FaEllipsisV } from "react-icons/fa";
+import {AuthContext} from '../../../context/AuthProvider'
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [filterStatus, setFilterStatus] = useState(""); // "" = all, "active", "blocked"
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
+  const {user} = use(AuthContext)
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/usersall"); // Your backend endpoint
+        const res = await axios.get("http://localhost:3000/api/usersall", {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      }); // Your backend endpoint
         setUsers(res.data);
       } catch (err) {
         console.error(err);
@@ -23,7 +30,12 @@ const AllUsers = () => {
 
   const handleBlock = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/block?email=${email}`);
+      await axios.put(`http://localhost:3000/api/block?email=${email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setUsers(users.map(u => u.email === email ? { ...u, status: "blocked" } : u));
     } catch (err) {
       console.error(err);
@@ -32,7 +44,12 @@ const AllUsers = () => {
 
   const handleUnblock = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/unblock?email=${email}`);
+      await axios.put(`http://localhost:3000/api/unblock?email=${email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setUsers(users.map(u => u.email === email ? { ...u, status: "active" } : u));
     } catch (err) {
       console.error(err);
@@ -41,7 +58,12 @@ const AllUsers = () => {
 
   const handleMakeVolunteer = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/role?email=${email}&role=volunteer`);
+      await axios.put(`http://localhost:3000/api/role?email=${email}&role=volunteer`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setUsers(users.map(u => u.email === email ? { ...u, role: "volunteer" } : u));
     } catch (err) {
       console.error(err);
@@ -50,7 +72,12 @@ const AllUsers = () => {
 
   const handleMakeAdmin = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/role?email=${email}&role=admin`);
+      await axios.put(`http://localhost:3000/api/role?email=${email}&role=admin`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${user.accessToken}`
+        }
+      });
       setUsers(users.map(u => u.email === email ? { ...u, role: "admin" } : u));
     } catch (err) {
       console.error(err);

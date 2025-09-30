@@ -8,6 +8,7 @@ import Loading from './Loading';
 const Navbar = () => {
   const { user, logout, loading ,setLoading, setUser} = use(AuthContext)
 
+
   const handleSignOut = () => {
     
     setLoading(true)

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { AuthContext } from "../../context/AuthProvider";
 
 
 const CheckoutForm = ({ amount, user, onSuccess }) => {
@@ -7,11 +8,12 @@ const CheckoutForm = ({ amount, user, onSuccess }) => {
     const elements = useElements();
     const [error, setError] = useState(null);
     const [processing, setProcessing] = useState(false);
+    const {user:user2} = use(AuthContext)
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!stripe || !elements) return;
-        
+
 
         setProcessing(true);
         onSuccess()
@@ -19,7 +21,7 @@ const CheckoutForm = ({ amount, user, onSuccess }) => {
             elements,
             confirmParams: { return_url: `${window.location.origin}/funding` },
         });
-        
+
 
         if (result.error) {
             setError(result.error.message);
@@ -31,9 +33,14 @@ const CheckoutForm = ({ amount, user, onSuccess }) => {
                     userName: user.displayName,
                     userEmail: user.email,
                     amount: paymentAmount, // your amount
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bearer ${user2.accessToken}`
+                    }
                 });
                 Swal.fire("Success", "Funding added successfully", "success"); // Notify parent component
-                
+
             } catch (err) {
                 console.error(err);
                 setError("Failed to save funding info");

@@ -16,6 +16,7 @@ const CreateDonationRequest = () => {
     const [upazilas, setUpazilas] = useState([]);
     const [blocked, setBlocked] = useState(false);
 
+
     const [formData, setFormData] = useState({
         requesterName: user?.displayName || '',
         requesterEmail: user?.email || '',
@@ -46,7 +47,12 @@ const CreateDonationRequest = () => {
     }, [formData.recipientDistrict]);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/check-block?email=${user.email}`).
+        axios.get(`http://localhost:3000/api/check-block?email=${user.email}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${user.accessToken}`
+            }
+        }).
             then(res => {
                 if (res.data.blocked) {
                     Swal.fire({
@@ -79,6 +85,11 @@ const CreateDonationRequest = () => {
             const res = await axios.post('http://localhost:3000/api/donation-requests', {
                 ...formData,
                 status: 'pending'
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${user.accessToken}`
+                }
             });
             if (res.data.requestId) {
                 Swal.fire({
