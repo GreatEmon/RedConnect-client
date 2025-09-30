@@ -8,6 +8,8 @@ const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState()
 
+  document.title = "All Blogs - RedConnect"
+
   useEffect(()=>{
     setLoading(true)
     axios.get("https://red-connect-backend.vercel.app/api/blogs").
