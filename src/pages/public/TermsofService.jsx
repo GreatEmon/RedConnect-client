@@ -1,6 +1,7 @@
 import React from "react";
 
 const TermsOfService = () => {
+  document.title = "Terms of Services"
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-6">
       <div className="max-w-4xl mx-auto bg-white p-10 rounded-lg shadow-lg">

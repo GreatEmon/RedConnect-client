@@ -8,6 +8,7 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  document.title = "Contact - RedConnect"
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
