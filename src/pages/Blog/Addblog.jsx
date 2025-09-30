@@ -4,6 +4,7 @@ import axios from "axios";
 import  JoditEditor from "jodit-react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthProvider";
+import Loading from "../../components/Loading";
 
 const AddBlog = () => {
   const { user } = useContext(AuthContext);
@@ -12,6 +13,8 @@ const AddBlog = () => {
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+
+  document.title = "Add Blog - RedConnect"
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -22,16 +25,13 @@ const AddBlog = () => {
     const apiKey = import.meta.env.VITE_imgbb_apikey; // replace with your key
 
     try {
-      setLoading(true);
       const res = await axios.post(
         `https://api.imgbb.com/1/upload?key=${apiKey}`,
         formData
       );
       setImage(res.data.data.url);
-      setLoading(false);
     } catch (err) {
       console.error(err);
-      setLoading(false);
     }
   };
 
@@ -74,6 +74,8 @@ const AddBlog = () => {
       setLoading(false);
     }
   };
+
+  if(loading) return <Loading></Loading>
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
