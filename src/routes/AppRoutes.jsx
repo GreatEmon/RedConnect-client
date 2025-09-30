@@ -36,6 +36,7 @@ import PrivateRouteAll from '../PrivateRoute/PrivateRouteAll';
 import IsAdmin from '../PrivateRoute/IsAdmin';
 import AddBlog from '../pages/Blog/Addblog';
 import OnlyAdmin from '../PrivateRoute/OnlyAdmin';
+import DashBoard from '../PrivateRoute/DashBoad';
 
 
 const AppRoutes = createBrowserRouter([
@@ -117,9 +118,9 @@ const AppRoutes = createBrowserRouter([
       // // Donor
       {
         index: true,
-        element: <PrivateRouteAll>
+        element: <DashBoard>
           <DonorHome></DonorHome>
-        </PrivateRouteAll>
+        </DashBoard>
       },
       {
         path: 'donation-request/edit/:id',

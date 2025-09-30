@@ -9,6 +9,7 @@ import { AuthContext } from "../../context/AuthProvider";
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const SearchPage = () => {
+  document.title = "Search - RedConnect"
   const doc = new jsPDF();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);

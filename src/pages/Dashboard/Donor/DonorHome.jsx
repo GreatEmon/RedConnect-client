@@ -8,16 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 
 const DonorHome = () => {
   const navigate = useNavigate();
-  const { user , role, roleLoading } = use(AuthContext)
+  const { user } = use(AuthContext)
   const [loading, setLoading] = useState(true);
   document.title = "Donor Home"
 
-  if(!roleLoading && role === "admin"){
-     navigate("/dashboard/stat")
-  }
-  if( !roleLoading && role === "volunteer"){
-     navigate("/dashboard/stat")
-  }
   // Fetch current user info and his donation requests
 
   const { data: requests = [], isLoading, isError, error,refetch } = useQuery({

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router";
 
 const RestrictedAccess = () => {
+  document.title = "Restricted Access"
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 p-6">
       <h1 className="text-8xl font-bold text-yellow-600 mb-4">🚫</h1>
