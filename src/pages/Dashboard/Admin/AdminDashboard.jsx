@@ -44,7 +44,7 @@ const AdminDashboard = () => {
         <div className="bg-white rounded-2xl shadow p-6 flex items-center gap-4 hover:shadow-lg transition">
           <FaDonate className="text-4xl text-green-600" />
           <div>
-            <p className="text-2xl font-bold">{stats.totalFunds}</p>
+            <p className="text-2xl font-bold">{stats.totalFunding}</p>
             <p className="text-gray-500">Total Funds</p>
           </div>
         </div>

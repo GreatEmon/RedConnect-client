@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ const Contact = () => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // TODO: Add API call to send contact message
-    alert("Message sent successfully!");
+    Swal.fire("Message sent successfully!");
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
@@ -95,9 +96,18 @@ const Contact = () => {
               <p className="text-gray-700">Phone: +880 123 456 789</p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-lg h-64 flex items-center justify-center text-gray-400">
+            <div className="bg-white p-6 rounded-lg shadow-lg h-82 flex items-center justify-center text-gray-400">
               {/* Map Placeholder */}
-              <p>Map Placeholder</p>
+              <iframe
+                title="Google Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.903423453223!2d90.39124731536273!3d23.75088589460021!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755bf595c2d3f07%3A0x8c5f7b78e2f7efb5!2sDhaka%20University!5e0!3m2!1sen!2sbd!4v1695809184309!5m2!1sen!2sbd"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
           </div>
         </div>

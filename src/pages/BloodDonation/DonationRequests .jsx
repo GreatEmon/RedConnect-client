@@ -34,7 +34,7 @@ const DonationRequests = ({ user }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {requests.map((req) => (
             <div
-              key={req.id}
+              key={req._id}
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               <h3 className="text-xl font-semibold text-red-600">

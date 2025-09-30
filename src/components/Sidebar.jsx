@@ -10,7 +10,7 @@ import Loading from "./Loading";
 
 const Sidebar = () => {
   const { user, logout, setUser } = useContext(AuthContext);
-  const [admin, setAdmin] = useState(false);
+  const [admin, setAdmin] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -22,7 +22,11 @@ const Sidebar = () => {
         .get(`http://localhost:3000/role?email=${user.email}`)
         .then((res) => {
           console.log(res.data.role)
-          setAdmin(res.data.role === "admin");
+          if(res.data.role === "admin"){
+            setAdmin(1);
+          }else if(res.data.role === "volunteer"){
+            setAdmin(2);
+          }
           setLoading(false);
         })
         .catch((err) => {
@@ -60,10 +64,17 @@ const Sidebar = () => {
 
   // Add admin-only links dynamically
   // console.log(admin)
-  if (admin) {
+  if (admin==1) {
     navItems = [
-      { to: "/dashboard/admin", icon: <FaHome />, label: "Home" },
+      { to: "/dashboard/stat", icon: <FaHome />, label: "Home" },
       { to: "/dashboard/all-users", icon: <FaUser />, label: "All Users" },
+      { to: "/dashboard/all-blood-donation-request", icon: <FaListAlt />, label: "All Requests" },
+      { to: "/dashboard/content-management", icon: <FaPlusCircle />, label: "Content Management" }
+    ];
+  }
+  if (admin==2) {
+    navItems = [
+      { to: "/dashboard/stat", icon: <FaHome />, label: "Home" },
       { to: "/dashboard/all-blood-donation-request", icon: <FaListAlt />, label: "All Requests" },
       { to: "/dashboard/content-management", icon: <FaPlusCircle />, label: "Content Management" }
     ];

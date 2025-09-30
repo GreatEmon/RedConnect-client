@@ -4,7 +4,7 @@ import Loading from '../components/Loading';
 import { Navigate } from 'react-router';
 import { AuthContext } from '../context/AuthProvider';
 
-const IsAdmin = ({ children }) => {
+const OnlyAdmin = ({ children }) => {
   const { user, loading: authLoading } = use(AuthContext); // get user and loading from context
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,9 +31,9 @@ const IsAdmin = ({ children }) => {
 
   if (authLoading || loading) return <Loading />;
 
-  if (role === 'admin' || role === 'volunteer') return children;
+  if (role === 'admin') return children;
 
   return <Navigate to="/restricted" />;
 };
 
-export default IsAdmin;
+export default OnlyAdmin;

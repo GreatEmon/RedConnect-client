@@ -1,15 +1,17 @@
 // src/pages/Dashboard/Admin/ContentManagement.jsx
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Loading from "../../../components/Loading";
+import { AuthContext } from "../../../context/AuthProvider";
 
 const ContentManagement = ({ userEmail }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const navigate = useNavigate();
+  const {role, roleLoading} = use(AuthContext)
 
   // Fetch blogs
   const fetchBlogs = async () => {
@@ -101,7 +103,7 @@ const ContentManagement = ({ userEmail }) => {
               <th>Thumbnail</th>
               <th>Status</th>
               <th>Created By</th>
-              <th>Actions</th>
+              {role === "admin" && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -109,11 +111,11 @@ const ContentManagement = ({ userEmail }) => {
               <tr key={blog._id}>
                 <td>{blog.title}</td>
                 <td>
-                  <img src={blog.thumbnail} alt="thumb" className="w-20 h-14 object-cover rounded" />
+                  <img src={blog.image} alt="thumb" className="w-20 h-14 object-cover rounded" />
                 </td>
                 <td>{blog.status}</td>
                 <td>{blog.author.email}</td>
-                <td className="flex gap-2">
+                {role === "admin" && <td className="flex gap-2">
                   <button
                     className="btn btn-sm btn-success"
                     onClick={() => handlePublishToggle(blog._id, blog.status)}
@@ -126,7 +128,8 @@ const ContentManagement = ({ userEmail }) => {
                   >
                     Delete
                   </button>
-                </td>
+                  
+                </td>}
               </tr>
             ))}
           </tbody>

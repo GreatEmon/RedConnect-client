@@ -9,7 +9,7 @@ const AddBlog = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
+  const [image, setImage] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,7 @@ const AddBlog = () => {
         `https://api.imgbb.com/1/upload?key=${apiKey}`,
         formData
       );
-      setThumbnail(res.data.data.url);
+      setImage(res.data.data.url);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -37,7 +37,7 @@ const AddBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !thumbnail || !content) return alert("All fields are required");
+    if (!title || !image || !content) return alert("All fields are required");
 
     const author = {
         name :user.displayName,
@@ -45,9 +45,12 @@ const AddBlog = () => {
         avatar : user.photoURL
     }
 
+    const slug = title.replace(" ", "-")
+
     const newBlog = {
       title,
-      thumbnail,
+      slug: slug,
+      image,
       content,
       author : author,
       status: "draft", // default draft
@@ -87,8 +90,8 @@ const AddBlog = () => {
           className="file-input file-input-bordered w-full"
           required
         />
-        {thumbnail && (
-          <img src={thumbnail} alt="thumbnail preview" className="w-40 h-40 object-cover rounded-md" />
+        {image && (
+          <img src={image} alt="image preview" className="w-40 h-40 object-cover rounded-md" />
         )}
 
         <JoditEditor value={content} onChange={(newContent) => setContent(newContent)} />

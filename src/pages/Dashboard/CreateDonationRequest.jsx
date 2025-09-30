@@ -10,10 +10,11 @@ const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 const CreateDonationRequest = () => {
     const navigate = useNavigate();
-    const {user} = use(AuthContext)
+    const { user } = use(AuthContext)
     const [districts, setDistricts] = useState([]);
     const [upazilasData, setUpazilasData] = useState([]);
     const [upazilas, setUpazilas] = useState([]);
+    const [blocked, setBlocked] = useState(false);
 
     const [formData, setFormData] = useState({
         requesterName: user?.displayName || '',
@@ -44,38 +45,56 @@ const CreateDonationRequest = () => {
         }
     }, [formData.recipientDistrict]);
 
+    useEffect(() => {
+        axios.get(`http://localhost:3000/api/check-block?email=${user.email}`).
+            then(res => {
+                if (res.data.blocked) {
+                    Swal.fire({
+                        title: "Blocked",
+                        text: "You are blocked, please contact with us",
+                        icon: "error"
+                    })
+                }
+                setBlocked(res.data.blocked)
+            })
+    }, [])
+
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value});
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // if(currentUser.status === 'blocked'){
-        //     setError('Your account is blocked. You cannot create donation requests.');
-        //     return;
-        // }
+        if (blocked) {
+            Swal.fire({
+                title: "Blocked",
+                text: "You are blocked",
+                icon: "error"
+            })
+            return;
+        }
 
         try {
-            const  res = await axios.post('http://localhost:3000/api/donation-requests', {
+            const res = await axios.post('http://localhost:3000/api/donation-requests', {
                 ...formData,
                 status: 'pending'
             });
-            if(res.data.requestId){
+            if (res.data.requestId) {
                 Swal.fire({
-                        title: "Good job!",
-                        text: "Added Successfully!",
-                        icon: "success"
-                      });
+                    title: "Good job!",
+                    text: "Added Successfully!",
+                    icon: "success"
+                });
             }
             // navigate('/dashboard');
         } catch (err) {
             console.error(err);
             Swal.fire({
-                        title: "Error",
-                        text: err,
-                        icon: "error"
-                      });
+                title: "Error",
+                text: err,
+                icon: "error"
+            });
         }
     };
 
@@ -157,7 +176,7 @@ const CreateDonationRequest = () => {
                     </div>
 
                     {/* Submit */}
-                    <button type="submit" className="btn btn-primary w-full">Request</button>
+                    <button type="submit" className="btn btn-primary w-full" disabled={blocked ? true : false}>Request</button>
                 </form>
             </div>
         </div>

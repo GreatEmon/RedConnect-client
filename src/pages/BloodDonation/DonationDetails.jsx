@@ -2,22 +2,21 @@ import React, { use, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 import Loading from "../../components/Loading";
+import Swal from "sweetalert2";
 
 const DonationDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user } = use(AuthContext); // contains { displayName, email }
+    const { user, loading, setLoading } = use(AuthContext); // contains { displayName, email }
     const [request, setRequest] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [confirming, setConfirming] = useState(false);
-    const [showModal, setShowModal] = useState(true);
 
     useEffect(() => {
         const fetchRequest = async () => {
             try {
                 const res = await fetch(`http://localhost:3000/api/donation-requests/${id}`);
                 if (res.status === 401) {
-                    navigate("/login");
+                    // navigate("/login");
                     return;
                 }
                 const data = await res.json();
@@ -29,7 +28,7 @@ const DonationDetails = () => {
             }
         };
         fetchRequest();
-    }, [id, navigate]);
+    }, [id]);
 
     const handleConfirmDonation = async () => {
         setConfirming(true);
@@ -42,9 +41,19 @@ const DonationDetails = () => {
                     donorEmail: user.email,
                 }),
             });
-            if (!res.ok) throw new Error("Failed to confirm donation");
+            if (!res.ok) {
+                return Swal.fire({
+                    title: "Internal Problem",
+                    text: "something wrong",
+                    icon: "error"
+                });
+            }
             const updated = await res.json();
-            alert(updated.message);
+            Swal.fire({
+                    title: "Successful",
+                    text: updated.message,
+                    icon: "success"
+                });
             // refresh data to show updated status
             setRequest((prev) => ({
                 ...prev,
@@ -53,7 +62,11 @@ const DonationDetails = () => {
             }));
         } catch (err) {
             console.error(err);
-            alert("Error confirming donation");
+            Swal.fire({
+                    title: "Error",
+                    text: "Error confirming Donation",
+                    icon: "error"
+                });
         } finally {
             setConfirming(false);
             navigate("/dashboard")
@@ -97,7 +110,7 @@ const DonationDetails = () => {
                     <h2 className="text-xl font-semibold mb-4">Confirm Donation</h2>
                     <div className="space-y-2">
                         <p>
-                            <span className="font-semibold">Donor Name:</span> {user.displayName}
+                            <span className="font-semibold">Donor Name:</span> {user?.displayName}
                         </p>
                         <p>
                             <span className="font-semibold">Donor Email:</span> {user.email}

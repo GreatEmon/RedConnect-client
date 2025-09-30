@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../../context/AuthProvider";
 
 const AllBloodDonationRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -9,11 +10,12 @@ const AllBloodDonationRequests = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage] = useState(10);
   const navigate = useNavigate()
+  const { role, roleLoading } = use(AuthContext)
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/donation-requests"); // backend API to get all donation requests
+        const res = await axios.get("http://localhost:3000/api/donation-requestsall"); // backend API to get all donation requests
         setRequests(res.data);
       } catch (err) {
         console.error(err);
@@ -25,15 +27,23 @@ const AllBloodDonationRequests = () => {
 
   // Action handlers
   const handleStatusChange = async (id, newStatus) => {
-     try {
+    try {
       const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus });
-      setRequests(requests.map(r => r._id === requestId ? r.status = newStatus: r));
+      setRequests(requests.map(r => r._id === requestId ? r.status = newStatus : r));
     } catch (err) {
       console.error(err);
     }
   };
 
   const handleDelete = (id) => {
+
+    if (role === "volunteer" && !roleLoading) {
+      return Swal.fire({
+        title: "You are not admin",
+        text: "You have no permission to delete this!",
+        icon: "error"
+      })
+    }
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -132,18 +142,23 @@ const AllBloodDonationRequests = () => {
                   )}
 
                   {/* Edit & Delete */}
-                  <button
-                    className="btn btn-warning btn-sm"
-                    onClick={() => navigate(`/dashboard/donation-request/edit/${req._id}`)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-error btn-sm"
-                    onClick={() => handleDelete(req._id)}
-                  >
-                    Delete
-                  </button>
+                  {role === "admin" &&
+                    <button
+                      className="btn btn-warning btn-sm"
+                      onClick={() => navigate(`/dashboard/donation-request/edit/${req._id}`)}
+                    >
+                      Edit
+                    </button>
+                  }
+                  {
+                    role === "admin" && <button
+                      className="btn btn-error btn-sm"
+                      onClick={() => handleDelete(req._id)}
+                    >
+                      Delete
+                    </button>
+                  }
+
 
                   {/* View */}
                   <button

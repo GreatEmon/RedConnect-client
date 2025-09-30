@@ -6,8 +6,7 @@ import Swal from 'sweetalert2'
 import Loading from './Loading';
 
 const Navbar = () => {
-  const { user, logout, loading ,setLoading, setUser, role} = use(AuthContext)
-  console.log(role)
+  const { user, logout, loading ,setLoading, setUser} = use(AuthContext)
 
   const handleSignOut = () => {
     
@@ -26,6 +25,7 @@ const Navbar = () => {
     });
   }
 
+  if(loading) return <Loading />
   return (
     <nav className="bg-base-100 shadow-md">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">

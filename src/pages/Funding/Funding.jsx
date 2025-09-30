@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { use } from "react";
 import {AuthContext} from '../../context/AuthProvider'
+import Loading from "../../components/Loading";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
@@ -121,9 +122,9 @@ const Funding = () => {
       {/* Fundings Table */}
       <h3 className="text-xl font-semibold mt-10 mb-3">All Fundings</h3>
       {loading ? (
-        <p>Loading...</p>
+        <Loading></Loading>
       ) : fundings.length === 0 ? (
-        <p>No fundings yet.</p>
+        <p className="my-5 text-xl font-bold text-red-600">No fundings yet.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="table table-zebra w-full">

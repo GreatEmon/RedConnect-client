@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router";
 
 const teamMembers = [
-  { name: "MD Emon", role: "Founder & CEO", avatar: "/avatars/emon.jpg" },
-  { name: "Rohan Hasan", role: "Lead Developer", avatar: "/avatars/rohan.jpg" },
-  { name: "Sara Khan", role: "UI/UX Designer", avatar: "/avatars/sara.jpg" },
+  { name: "MD Emon", role: "Founder & CEO", avatar: "https://images.pexels.com/photos/34046709/pexels-photo-34046709.jpeg" },
+  { name: "Mylia Beri", role: "Lead Developer", avatar: "https://images.pexels.com/photos/6702633/pexels-photo-6702633.jpeg" },
+  { name: "Sara Khan", role: "UI/UX Designer", avatar: "https://images.pexels.com/photos/34093136/pexels-photo-34093136.jpeg" },
 ];
 
 const AboutUs = () => {
@@ -64,9 +65,9 @@ const AboutUs = () => {
           Whether you are a donor, volunteer, or supporter, your contribution 
           can save lives. Together we can build a healthier and stronger community.
         </p>
-        <button className="btn btn-primary px-6 py-3 rounded-full hover:bg-red-700 transition-colors">
+        <Link className="btn btn-primary px-6 py-3 rounded-full hover:bg-red-700 transition-colors" to='/register'>
           Become a Donor
-        </button>
+        </Link>
       </section>
     </div>
   );

@@ -35,14 +35,7 @@ import TermsOfService from '../pages/public/TermsofService';
 import PrivateRouteAll from '../PrivateRoute/PrivateRouteAll';
 import IsAdmin from '../PrivateRoute/IsAdmin';
 import AddBlog from '../pages/Blog/Addblog';
-
-// // Dashboard – Admin
-
-
-// // Dashboard – Volunteer
-// import VolunteerHome from '../pages/Dashboard/Volunteer/DashboardHome';
-// import VolunteerAllRequests from '../pages/Dashboard/Volunteer/AllDonationRequests';
-// import VolunteerContent from '../pages/Dashboard/Volunteer/ContentManagement';
+import OnlyAdmin from '../PrivateRoute/OnlyAdmin';
 
 
 const AppRoutes = createBrowserRouter([
@@ -50,72 +43,144 @@ const AppRoutes = createBrowserRouter([
     path: '/',
     Component: MainLayout,
     children: [
-      { 
-        index: true, 
-        Component: Home 
+      {
+        index: true,
+        Component: Home
       },
-      { 
-        path: 'login', 
-        element: <Login/>
+      {
+        path: 'login',
+        element: <Login />
 
       },
-      { 
-        path: 'register', 
-        element: <Register/>
+      {
+        path: 'register',
+        element: <Register />
       },
-      { path: 'blog', Component: BlogList },
-      { path: 'blog/:id', Component: BlogDetails },
-      { path: 'search', Component: SearchPage },
-      { path: 'donation-requests', Component: DonationRequests },
-      { path: 'donation/:id', Component: DonationDetails },
-      { path: 'funding', Component: Funding },
-      { path: 'about', Component: AboutUs },
-      { path: 'contact', Component: Contact },
-      { path: 'privacy', Component: PrivacyPolicy },
-      { path: 'terms', Component: TermsOfService },
-      { path: 'restricted', Component: RestrictedAccess },
+      {
+        path: 'search',
+        Component: SearchPage
+
+      },
+      {
+        path: 'blog',
+        Component: BlogList
+      },
+      {
+        path: 'blog/:id',
+        Component: BlogDetails
+      },
+      {
+        path: 'donation-requests',
+        Component: DonationRequests
+      },
+      {
+        path: 'about',
+        Component: AboutUs
+      },
+      {
+        path: 'contact',
+        Component: Contact
+      },
+      {
+        path: 'privacy',
+        Component: PrivacyPolicy
+      },
+      {
+        path: 'terms',
+        Component: TermsOfService
+      },
+      {
+        path: 'restricted',
+        Component: RestrictedAccess
+      },
+
+
+      // Private Route
+      {
+        path: 'donation/:id',
+        element: <PrivateRouteAll>
+          <DonationDetails></DonationDetails>
+        </PrivateRouteAll>
+      },
+      {
+        path: 'funding',
+        element: <PrivateRouteAll>
+          <Funding></Funding>
+        </PrivateRouteAll>
+      }
     ],
   },
   {
     path: '/dashboard',
     Component: DashboardLayout,
     children: [
-      // Shared
-      { 
-        index: true, 
-        Component: DonorHome 
+      // // Donor
+      {
+        index: true,
+        element: <PrivateRouteAll>
+          <DonorHome></DonorHome>
+        </PrivateRouteAll>
       },
       {
-        path: 'profile',
+        path: 'donation-request/edit/:id',
         element: <PrivateRouteAll>
-          <Profile/>
+          <UpdateDonation></UpdateDonation>
         </PrivateRouteAll>
       },
 
-      // Donor
-      { 
-        path: 'my-donation-requests', 
-        Component: MyDonationRequests 
+      {
+        path: 'profile',
+        element: <PrivateRouteAll>
+          <Profile />
+        </PrivateRouteAll>
       },
-      { path: 'create-donation-request', Component: CreateDonationRequest },
-      { path: 'donation-request/edit/:id', Component: UpdateDonation },
+      {
+        path: 'create-donation-request',
+        element: <PrivateRouteAll>
+          <CreateDonationRequest />
+        </PrivateRouteAll>
+      },
 
-      //       // Admin
-      { 
-        path: 'admin', 
-        element:<IsAdmin>
+      {
+        path: 'my-donation-requests',
+        element: <PrivateRouteAll>
+          <MyDonationRequests />
+        </PrivateRouteAll>
+      },
+
+
+      // Admin
+
+      {
+        path: 'stat',
+        element: <IsAdmin>
           <AdminDashboard></AdminDashboard>
-        </IsAdmin>  
+        </IsAdmin>
       },
-      { path: 'all-users', Component: AllUsers },
-      { path: 'all-blood-donation-request', Component: AllBloodDonationRequests },
-      { path: 'content-management', Component: ContentManagement },
-      { path: 'content-management/add-blog', Component: AddBlog },
-
-      //       // Volunteer
-      //       { path: 'volunteer', Component: VolunteerHome },
-      //       { path: 'volunteer/all-blood-donation-request', Component: VolunteerAllRequests },
-      //       { path: 'volunteer/content-management', Component: VolunteerContent },
+      {
+        path: 'all-users',
+        element: <OnlyAdmin>
+          <AllUsers></AllUsers>
+        </OnlyAdmin>
+      },
+      {
+        path: 'all-blood-donation-request',
+        element: <IsAdmin>
+          <AllBloodDonationRequests></AllBloodDonationRequests>
+        </IsAdmin>
+      },
+      {
+        path: 'content-management',
+        element: <IsAdmin>
+          <ContentManagement></ContentManagement>
+        </IsAdmin>
+      },
+      {
+        path: 'content-management/add-blog',
+        element: <IsAdmin>
+          <AddBlog></AddBlog>
+        </IsAdmin>
+      },
     ],
   },
   { path: '*', Component: NotFound },

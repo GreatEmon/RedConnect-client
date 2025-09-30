@@ -1,58 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
-import axios from "axios";
+import { useParams } from "react-router";
+import Loading from "../../components/Loading";
 
 const BlogDetails = () => {
-  const { id } = useParams(); // Get blog ID from URL
-  const navigate = useNavigate();
+  const { id } = useParams(); // Assuming URL: /blogs/:slug
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/blogs/${id}`);
-        setBlog(res.data);
+        const res = await fetch(`http://localhost:3000/api/blogs/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch blog");
+        const data = await res.json();
+        setBlog(data);
       } catch (err) {
         console.error(err);
-        navigate("/"); // Redirect if blog not found
+        setError("Unable to load blog.");
       } finally {
         setLoading(false);
       }
     };
     fetchBlog();
-  }, [id, navigate]);
+  }, [id]);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-
-  if (!blog) return <p className="text-center mt-10">Blog not found.</p>;
+  if (loading) return <Loading></Loading>
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (!blog) return <div className="p-6">Blog not found.</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-4xl font-bold mb-4 text-gray-800">{blog.title}</h1>
-      {blog.thumbnail && (
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded my-10">
+      <h1 className="text-3xl font-bold mb-4">{blog[0].title}</h1>
+
+      <div className="flex items-center gap-3 mb-4">
         <img
-          src={blog.thumbnail}
-          alt={blog.title}
-          className="w-full h-64 object-cover rounded-lg mb-6"
+          src={blog[0].author.avatar}
+          alt={blog[0].author.name}
+          className="w-10 h-10 rounded-full"
+        />
+        <div>
+          <p className="font-semibold">{blog[0].author.name}</p>
+          <p className="text-sm text-gray-500">
+            {new Date(blog[0].createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      </div>
+
+      {blog[0].image && (
+        <img
+          src={blog[0].image}
+          alt={blog[0].title}
+          className="w-full max-h-96 object-cover mb-6 rounded"
         />
       )}
-      <div
-        className="prose max-w-full"
-        dangerouslySetInnerHTML={{ __html: blog.content }}
-      ></div>
 
-      <div className="mt-6 text-gray-500 text-sm">
-        <p>
-          Status: <span className="font-semibold">{blog.status}</span>
-        </p>
-        <p>
-          Created At:{" "}
-          <span className="font-semibold">
-            {new Date(blog.createdAt).toLocaleDateString()}
-          </span>
-        </p>
-      </div>
+      <div
+        className="blog-content prose prose-red max-w-full"
+        dangerouslySetInnerHTML={{ __html: blog[0].content }}
+      ></div>
     </div>
   );
 };

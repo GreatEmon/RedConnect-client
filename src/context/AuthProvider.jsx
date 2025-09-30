@@ -1,42 +1,47 @@
 import { createContext, useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInWithPopup, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import { app } from '../firebae.configue'
-import axios from "axios";
 
 export const AuthContext = createContext()
 export const auth = getAuth(app);
 
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [admin, setAdmin] = useState(false)
+  const [roleLoading, setRoleLoading] = useState(true)
   const [role, setRole] = useState(null);
 
   const register = (email, password) => {
+    setLoading(true)
     return createUserWithEmailAndPassword(auth, email, password)
   }
 
   const login = (email, password) => {
+    setLoading(true)
     return signInWithEmailAndPassword(auth, email, password)
   }
 
   const logout = () => {
+    setLoading(true)
     return signOut(auth)
   }
 
   const updateUser = (updateData) => {
+    
     return updateProfile(auth.currentUser, updateData)
   }
 
 
 
   useEffect(() => {
+    setLoading(true)
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user)
         setLoading(false)
       } else {
+        setUser(null)
         setLoading(false)
       }
     });
@@ -48,7 +53,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!user) {
       setRole(null);
-      setLoading(false);
+      setRoleLoading(false);
       return;
     }
 
@@ -57,9 +62,9 @@ const AuthProvider = ({ children }) => {
       .then(res => res.json())
       .then(data => {
         setRole(data.role);        // "admin" | "volunteer" | "donor"
-        setLoading(false);
+        setRoleLoading(false)
       })
-      .catch(() => setLoading(false));
+      .catch((err) => console.log(err));
   }, [user]);
 
 
@@ -77,12 +82,16 @@ const AuthProvider = ({ children }) => {
     loading,
     setLoading,
     updateUser,
-    admin,
-    setAdmin
+    roleLoading
   }
 
 
-  return <AuthContext value={authData}> {children}</AuthContext>
+  return (
+  <AuthContext.Provider value={authData}>
+    {children}
+  </AuthContext.Provider>
+);
+
 }
 
 export default AuthProvider

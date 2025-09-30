@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+.jodit-wysiwyg{
+    height: 300px!important;
+}
