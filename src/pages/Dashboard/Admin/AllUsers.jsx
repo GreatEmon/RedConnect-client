@@ -8,7 +8,10 @@ const AllUsers = () => {
   const [filterStatus, setFilterStatus] = useState(""); // "" = all, "active", "blocked"
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
+  const [loadingStats, setLoadingStats] = useState(true);
   const {user} = use(AuthContext)
+
+  document.title = " All Users"
 
   useEffect(() => {
     const fetchUsers = async () => {

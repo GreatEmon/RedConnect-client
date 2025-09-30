@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../context/AuthProvider";
+import Loading from "../../../components/Loading";
 
 const AllBloodDonationRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -11,10 +12,14 @@ const AllBloodDonationRequests = () => {
   const [requestsPerPage] = useState(10);
   const navigate = useNavigate()
   const { role, roleLoading, user } = use(AuthContext)
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  document.title = "All Blood Donation Request"
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
+        setLoadingStats(true)
         const res = await axios.get("https://red-connect-backend.vercel.app/api/donation-requestsall", {
         headers: {
           'Content-Type': 'application/json',
@@ -22,8 +27,10 @@ const AllBloodDonationRequests = () => {
         }
       }); // backend API to get all donation requests
         setRequests(res.data);
+        setLoadingStats(false)
       } catch (err) {
         console.error(err);
+        setLoadingStats(false)
       }
     };
 
@@ -33,6 +40,7 @@ const AllBloodDonationRequests = () => {
   // Action handlers
   const handleStatusChange = async (requestId, newStatus) => {
     try {
+      setLoadingStats(true)
       const res = await axios.put(`https://red-connect-backend.vercel.app/api/donation-requests/${requestId}/status`, { status: newStatus }, {
         headers: {
           'Content-Type': 'application/json',
@@ -40,6 +48,7 @@ const AllBloodDonationRequests = () => {
         }
       });
       setRequests(requests.filter(r => r._id === requestId ? r.status = newStatus: r));
+      setLoadingStats(false)
     } catch (err) {
       console.error(err);
     }
@@ -87,6 +96,8 @@ const AllBloodDonationRequests = () => {
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
   const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
   const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
+
+  if(loadingStats) return <Loading></Loading>
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
