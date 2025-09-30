@@ -9,6 +9,8 @@ const DonationRequests = ({ user }) => {
   const [requests, setRequests] = useState([]);
   const [load, setLoad] = useState(true)
 
+  document.title = "Pending Donation"
+
  
   useEffect(() => {
       axios.get('https://red-connect-backend.vercel.app/api/donation-requests').

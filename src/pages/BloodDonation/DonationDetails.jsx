@@ -11,6 +11,8 @@ const DonationDetails = () => {
     const [request, setRequest] = useState(null);
     const [confirming, setConfirming] = useState(false);
 
+    document.title = "Donation Details"
+
     useEffect(() => {
         const fetchRequest = async () => {
             try {
@@ -82,7 +84,7 @@ const DonationDetails = () => {
     };
 
     if (loading) return <Loading />;
-    if (!request) return <p className="text-center mt-10">Request not found</p>;
+    if (!request) return <p className="text-center my-20">loading........</p>;
 
     return (
         <div className="max-w-2xl mx-auto p-6">
