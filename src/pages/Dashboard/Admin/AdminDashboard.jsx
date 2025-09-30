@@ -18,7 +18,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/dashboard-stats", {
+        const res = await axios.get("https://red-connect-backend.vercel.app/api/admin/dashboard-stats", {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

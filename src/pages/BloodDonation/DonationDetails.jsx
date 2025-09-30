@@ -14,7 +14,7 @@ const DonationDetails = () => {
     useEffect(() => {
         const fetchRequest = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/donation-requests/${id}`, {
+                const res = await fetch(`https://red-connect-backend.vercel.app/api/donation-requests/${id}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'authorization': `Bearer ${user.accessToken}`
@@ -38,7 +38,7 @@ const DonationDetails = () => {
     const handleConfirmDonation = async () => {
         setConfirming(true);
         try {
-            const res = await fetch(`http://localhost:3000/api/donation-requests/${id}/confirm`, {
+            const res = await fetch(`https://red-connect-backend.vercel.app/api/donation-requests/${id}/confirm`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',

@@ -17,7 +17,7 @@ const ContentManagement = ({ userEmail }) => {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/blogs", {
+      const res = await axios.get("https://red-connect-backend.vercel.app/api/blogs", {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -46,7 +46,7 @@ const ContentManagement = ({ userEmail }) => {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:3000/api/blogs/${id}`, {
+        await axios.delete(`https://red-connect-backend.vercel.app/api/blogs/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -64,7 +64,7 @@ const ContentManagement = ({ userEmail }) => {
   const handlePublishToggle = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === "draft" ? "published" : "draft";
-      await axios.put(`http://localhost:3000/api/blogs/${id}/status`, { status: newStatus }, {
+      await axios.put(`https://red-connect-backend.vercel.app/api/blogs/${id}/status`, { status: newStatus }, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

@@ -29,7 +29,7 @@ const CheckoutForm = ({ amount, user, onSuccess }) => {
         } else {
             try {
                 // Save fund info to backend
-                await axios.post("http://localhost:3000/api/fundings", {
+                await axios.post("https://red-connect-backend.vercel.app/api/fundings", {
                     userName: user.displayName,
                     userEmail: user.email,
                     amount: paymentAmount, // your amount

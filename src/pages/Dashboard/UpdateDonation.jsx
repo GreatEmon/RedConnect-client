@@ -33,7 +33,7 @@ const CreateDonationRequest = () => {
     useEffect(() => {
         setDistricts(districtsData);
         setUpazilasData(upazilasJSON);
-        axios.get(`http://localhost:3000/api/donation-requests/${id}`, {
+        axios.get(`https://red-connect-backend.vercel.app/api/donation-requests/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': `Bearer ${user.accessToken}`
@@ -62,7 +62,7 @@ const CreateDonationRequest = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.patch(`http://localhost:3000/api/donation-requests/${id}`, formData, {
+            const res = await axios.patch(`https://red-connect-backend.vercel.app/api/donation-requests/${id}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'authorization': `Bearer ${user.accessToken}`

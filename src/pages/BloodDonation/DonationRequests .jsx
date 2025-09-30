@@ -11,7 +11,7 @@ const DonationRequests = ({ user }) => {
 
  
   useEffect(() => {
-      axios.get('http://localhost:3000/api/donation-requests').
+      axios.get('https://red-connect-backend.vercel.app/api/donation-requests').
       then(res => {
         setRequests(res.data)
         setLoad(false)

@@ -11,7 +11,7 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/blogs/${id}`);
+        const res = await fetch(`https://red-connect-backend.vercel.app/api/blogs/${id}`);
         if (!res.ok) throw new Error("Failed to fetch blog");
         const data = await res.json();
         setBlog(data);

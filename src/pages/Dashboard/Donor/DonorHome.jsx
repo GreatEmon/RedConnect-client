@@ -24,7 +24,7 @@ const DonorHome = () => {
     queryKey: ["recentRequests", user.email],  // key includes email for caching
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:3000/api/recent?email=${user.email}`, {
+        `https://red-connect-backend.vercel.app/api/recent?email=${user.email}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -47,7 +47,7 @@ const DonorHome = () => {
       confirmButtonText: "Yes, delete it!"
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:3000/api/donation-requests/${_id}`, {
+        await axios.delete(`https://red-connect-backend.vercel.app/api/donation-requests/${_id}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -65,7 +65,7 @@ const DonorHome = () => {
 
   const handleStatusChange = async (requestId, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus }, {
+      const res = await axios.put(`https://red-connect-backend.vercel.app/api/donation-requests/${requestId}/status`, { status: newStatus }, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

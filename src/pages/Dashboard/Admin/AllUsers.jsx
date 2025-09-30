@@ -13,7 +13,7 @@ const AllUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/usersall", {
+        const res = await axios.get("https://red-connect-backend.vercel.app/api/usersall", {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -30,7 +30,7 @@ const AllUsers = () => {
 
   const handleBlock = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/block?email=${email}`, {
+      await axios.put(`https://red-connect-backend.vercel.app/api/block?email=${email}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -44,7 +44,7 @@ const AllUsers = () => {
 
   const handleUnblock = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/unblock?email=${email}`, {
+      await axios.put(`https://red-connect-backend.vercel.app/api/unblock?email=${email}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -58,7 +58,7 @@ const AllUsers = () => {
 
   const handleMakeVolunteer = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/role?email=${email}&role=volunteer`, {
+      await axios.put(`https://red-connect-backend.vercel.app/api/role?email=${email}&role=volunteer`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -72,7 +72,7 @@ const AllUsers = () => {
 
   const handleMakeAdmin = async (email) => {
     try {
-      await axios.put(`http://localhost:3000/api/role?email=${email}&role=admin`, {
+      await axios.put(`https://red-connect-backend.vercel.app/api/role?email=${email}&role=admin`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

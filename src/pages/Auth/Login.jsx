@@ -10,6 +10,7 @@ const Login = () => {
   const { login, loading, setLoading } = use(AuthContext)
   const location = useLocation()
 
+  document.title = "Login - RedConnect"
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

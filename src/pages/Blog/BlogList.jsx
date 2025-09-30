@@ -10,7 +10,7 @@ const BlogList = () => {
 
   useEffect(()=>{
     setLoading(true)
-    axios.get("http://localhost:3000/api/blogs").
+    axios.get("https://red-connect-backend.vercel.app/api/blogs").
     then(res =>{
       setBlogs(res.data)
       setLoading(false)

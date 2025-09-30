@@ -28,6 +28,8 @@ const Register = () => {
         confirmPassword: ''
     });
 
+    document.title = "Register - RedConnect"
+
     // Fetch districts and upazilas
     useEffect(() => {
         setDistricts(districtsData);
@@ -117,7 +119,7 @@ const Register = () => {
                     upazila: formData.upazila,
                 };
 
-                await axios.post('http://localhost:3000/api/users/register', backendData);
+                await axios.post('https://red-connect-backend.vercel.app/api/users/register', backendData);
                 navigate('/');
 
             })
@@ -135,7 +137,7 @@ const Register = () => {
 
     };
 
-    if(loading) return <Loading></Loading>
+    if (loading) return <Loading></Loading>
     return (
         <div className="min-h-screen flex items-center justify-center bg-red-50 py-20">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">

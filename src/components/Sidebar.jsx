@@ -18,7 +18,7 @@ const Sidebar = () => {
   useEffect(() => {
     if (user?.email) {
       setLoading(true);
-      axios.get(`http://localhost:3000/role?email=${user.email}`, {
+      axios.get(`https://red-connect-backend.vercel.app/role?email=${user.email}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

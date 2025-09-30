@@ -22,7 +22,7 @@ const Funding = () => {
   // Load all fundings on component mount
   const fetchFundings = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/fundings", {
+      const res = await axios.get("https://red-connect-backend.vercel.app/api/fundings", {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -47,7 +47,7 @@ const Funding = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/create-payment-intent", {
+      const res = await fetch("https://red-connect-backend.vercel.app/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Number(amount) * 100 }),
@@ -70,7 +70,7 @@ const Funding = () => {
   const handlePaymentSuccess = async (paymentIntentId) => {
     try {
       // Save funding info to backend
-      await axios.post("http://localhost:3000/api/fundings", {
+      await axios.post("https://red-connect-backend.vercel.app/api/fundings", {
         userName: user.displayName,
         userEmail: user.email,
         amount: Number(amount),

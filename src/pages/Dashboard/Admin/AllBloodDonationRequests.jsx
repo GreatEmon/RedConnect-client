@@ -15,7 +15,7 @@ const AllBloodDonationRequests = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/donation-requestsall", {
+        const res = await axios.get("https://red-connect-backend.vercel.app/api/donation-requestsall", {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -33,7 +33,7 @@ const AllBloodDonationRequests = () => {
   // Action handlers
   const handleStatusChange = async (requestId, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/donation-requests/${requestId}/status`, { status: newStatus }, {
+      const res = await axios.put(`https://red-connect-backend.vercel.app/api/donation-requests/${requestId}/status`, { status: newStatus }, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`
@@ -64,7 +64,7 @@ const AllBloodDonationRequests = () => {
       confirmButtonText: "Yes, delete it!"
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:3000/api/donation-requests/${id}`, {
+        await axios.delete(`https://red-connect-backend.vercel.app/api/donation-requests/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

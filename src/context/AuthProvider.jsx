@@ -57,7 +57,7 @@ const AuthProvider = ({ children }) => {
     }
 
     // Simple fetch – no axios needed
-    fetch(`http://localhost:3000/role?email=${user.email}`, {
+    fetch(`https://red-connect-backend.vercel.app/role?email=${user.email}`, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

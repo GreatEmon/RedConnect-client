@@ -22,7 +22,7 @@ const Profile = () => {
 
   useEffect(() => {
     // Fetch user data from backend
-    axios.get(`http://localhost:3000/api/users?email=${user.email}`, {
+    axios.get(`https://red-connect-backend.vercel.app/api/users?email=${user.email}`, {
       headers: {
         'Content-Type': 'application/json',
         'authorization': `Bearer ${user.accessToken}`
@@ -67,7 +67,7 @@ const Profile = () => {
         });
       })
 
-      const res = await axios.put(`http://localhost:3000/api/users?email=${user.email}`, formData, {
+      const res = await axios.put(`https://red-connect-backend.vercel.app/api/users?email=${user.email}`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

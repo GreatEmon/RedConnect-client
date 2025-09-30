@@ -47,7 +47,7 @@ const CreateDonationRequest = () => {
     }, [formData.recipientDistrict]);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/check-block?email=${user.email}`, {
+        axios.get(`https://red-connect-backend.vercel.app/api/check-block?email=${user.email}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': `Bearer ${user.accessToken}`
@@ -82,7 +82,7 @@ const CreateDonationRequest = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:3000/api/donation-requests', {
+            const res = await axios.post('https://red-connect-backend.vercel.app/api/donation-requests', {
                 ...formData,
                 status: 'pending'
             }, {

@@ -59,7 +59,7 @@ const AddBlog = () => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:3000/api/blogs", newBlog, {
+      await axios.post("https://red-connect-backend.vercel.app/api/blogs", newBlog, {
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${user.accessToken}`

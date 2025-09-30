@@ -49,7 +49,7 @@ const SearchPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/api/search-donors", {
+      const res = await axios.get("https://red-connect-backend.vercel.app/api/search-donors", {
         params: {
           bloodGroup: formData.bloodGroup,
           district: formData.district,
