@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router";
 
 const NotFound = () => {
+  document.title = "404 - Not Found"
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 p-6">
       <h1 className="text-9xl font-bold text-red-600 mb-4">404</h1>

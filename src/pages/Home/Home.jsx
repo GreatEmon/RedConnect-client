@@ -8,6 +8,7 @@ import Loading from '../../components/Loading'
 
 const Home = () => {
   const { user, loading } = use(AuthContext)
+  document.title = "Home - RedConnect"
 
   if (loading) return <Loading></Loading>
   return (

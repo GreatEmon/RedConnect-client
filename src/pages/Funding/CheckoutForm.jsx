@@ -10,6 +10,8 @@ const CheckoutForm = ({ amount, user, onSuccess }) => {
     const [processing, setProcessing] = useState(false);
     const {user:user2} = use(AuthContext)
 
+    document.title = "Donation - RedConnect"
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!stripe || !elements) return;
