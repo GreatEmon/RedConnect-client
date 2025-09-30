@@ -16,8 +16,6 @@ const Funding = () => {
   const [clientSecret, setClientSecret] = useState("");
   const [fundings, setFundings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
 
   // Load all fundings on component mount
   const fetchFundings = async () => {
@@ -97,11 +95,6 @@ const Funding = () => {
     }
   };
 
-  // Pagination logic
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentFundings = fundings.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(fundings.length / itemsPerPage);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -153,9 +146,9 @@ const Funding = () => {
               </tr>
             </thead>
             <tbody>
-              {currentFundings.map((f, index) => (
+              {fundings.map((f, index) => (
                 <tr key={f._id}>
-                  <td>{indexOfFirst + index + 1}</td>
+                  <td>{index+1}</td>
                   <td>{f.userName}</td>
                   <td>{f.userEmail}</td>
                   <td>{f.amount}</td>
@@ -165,20 +158,6 @@ const Funding = () => {
             </tbody>
           </table>
 
-          {/* Pagination */}
-          <div className="flex justify-center gap-2 mt-4">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-              <button
-                key={num}
-                className={`btn btn-sm ${
-                  num === currentPage ? "btn-primary" : "btn-outline"
-                }`}
-                onClick={() => setCurrentPage(num)}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
         </div>
       )}
     </div>

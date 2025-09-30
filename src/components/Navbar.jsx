@@ -6,8 +6,7 @@ import Swal from 'sweetalert2'
 import Loading from './Loading';
 
 const Navbar = () => {
-  const { user, logout, loading ,setLoading, setUser} = use(AuthContext)
-
+  const { user, logout, loading ,setLoading, setUser, role} = use(AuthContext)
 
   const handleSignOut = () => {
     
@@ -26,24 +25,23 @@ const Navbar = () => {
     });
   }
 
-  if(loading) return <Loading />
+  // if(loading) return <Loading />
   return (
     <nav className="bg-base-100 shadow-md">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-primary">
+        <Link to="/" className="md:text-2xl font-bold text-primary">
           Red-Connect
         </Link>
 
         {/* Links */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:text-base text-sm">
           <NavLink to="/donation-requests" className="link link-hover">
             Donation Requests
           </NavLink>
           <NavLink to="/blog" className="link link-hover">
             Blog
           </NavLink>
-
 
 
           {!user ? (
@@ -66,7 +64,7 @@ const Navbar = () => {
               {/* User Dropdown */}
               <div className="dropdown dropdown-end ite">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                  <div className="w-10 rounded-full mt-3">
+                  <div className="w-10 rounded-full md:mt-3">
                     {user.photoURL ? (
                       <img src={user.photoURL} alt="User Avatar" />
                     ) : (
