@@ -16,6 +16,8 @@ const CreateDonationRequest = () => {
     const [upazilasData, setUpazilasData] = useState([]);
     const [upazilas, setUpazilas] = useState([]);
 
+    document.title = "Update Donation"
+
     const [formData, setFormData] = useState({
         requesterName: user?.displayName || '',
         requesterEmail: user?.email || '',

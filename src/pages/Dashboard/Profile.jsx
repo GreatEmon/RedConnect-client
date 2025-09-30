@@ -20,6 +20,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const { user, updateUser } = use(AuthContext)
 
+  document.title = "Profile - Red Connect"
+
   useEffect(() => {
     // Fetch user data from backend
     axios.get(`https://red-connect-backend.vercel.app/api/users?email=${user.email}`, {

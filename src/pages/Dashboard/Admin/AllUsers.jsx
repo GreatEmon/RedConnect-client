@@ -2,6 +2,7 @@ import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import { FaEllipsisV } from "react-icons/fa";
 import {AuthContext} from '../../../context/AuthProvider'
+import Loading from "../../../components/Loading";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -23,8 +24,10 @@ const AllUsers = () => {
         }
       }); // Your backend endpoint
         setUsers(res.data);
+        setLoadingStats(false)
       } catch (err) {
         console.error(err);
+        setLoadingStats(false)
       }
     };
 
@@ -96,6 +99,7 @@ const AllUsers = () => {
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
+  if(loadingStats) return <Loading></Loading>
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-3xl font-bold mb-6 text-gray-700">All Users</h2>

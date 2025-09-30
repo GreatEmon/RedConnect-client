@@ -15,6 +15,7 @@ const CreateDonationRequest = () => {
     const [upazilasData, setUpazilasData] = useState([]);
     const [upazilas, setUpazilas] = useState([]);
     const [blocked, setBlocked] = useState(false);
+    document.title = "Create Donor Request"
 
 
     const [formData, setFormData] = useState({
