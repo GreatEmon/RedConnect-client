@@ -10,14 +10,17 @@ const AdminDashboard = () => {
     totalFunds: 0,
     totalDonationRequests: 0,
   });
+  const [loadingStats, setLoadingStats] = useState(true);
+  const {role, roleLoading, user} = use(AuthContext)
 
-  const {role, roleLoading, user} = use(AuthContext,)
+  document.title = "Admin Dashboard"
 
 
   // Fetch dashboard data
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setLoadingStats(true)
         const res = await axios.get("https://red-connect-backend.vercel.app/api/admin/dashboard-stats", {
         headers: {
           'Content-Type': 'application/json',
@@ -25,15 +28,17 @@ const AdminDashboard = () => {
         }
       });
         setStats(res.data);
+        setLoadingStats(false)
       } catch (err) {
         console.error(err);
+        setLoadingStats(false)
       }
     };
 
     fetchStats();
   }, []);
 
-  if(roleLoading) return <Loading></Loading>
+  if(roleLoading || loadingStats) return <Loading></Loading>
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -70,42 +75,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Donation Requests Table */}
-      {/* {recentRequests.length > 0 && (
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h3 className="text-xl font-semibold mb-4">Recent Donation Requests</h3>
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr>
-                  <th>Recipient Name</th>
-                  <th>Location</th>
-                  <th>Blood Group</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentRequests.map((req) => (
-                  <tr key={req._id}>
-                    <td>{req.recipientName}</td>
-                    <td>
-                      {req.recipientDistrict}, {req.recipientUpazila}
-                    </td>
-                    <td>{req.bloodGroup}</td>
-                    <td>{req.donationDate}</td>
-                    <td>{req.donationTime}</td>
-                    <td className={`font-semibold ${req.status === "pending" ? "text-yellow-500" : req.status === "inprogress" ? "text-blue-500" : req.status === "done" ? "text-green-500" : "text-red-500"}`}>
-                      {req.status}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )} */}
+  
     </div>
   );
 };

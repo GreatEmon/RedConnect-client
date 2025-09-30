@@ -7,9 +7,10 @@ import Swal from "sweetalert2";
 const DonationDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user, loading, setLoading } = use(AuthContext); // contains { displayName, email }
+    const { user } = use(AuthContext); // contains { displayName, email }
     const [request, setRequest] = useState(null);
     const [confirming, setConfirming] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     document.title = "Donation Details"
 
@@ -84,7 +85,7 @@ const DonationDetails = () => {
     };
 
     if (loading) return <Loading />;
-    if (!request) return <p className="text-center my-20">loading........</p>;
+    if (!request) return <p className="text-center my-20">Not Found</p>;
 
     return (
         <div className="max-w-2xl mx-auto p-6">
