@@ -14,18 +14,21 @@ const AllBloodDonationRequests = () => {
   const { role, roleLoading, user } = use(AuthContext)
   const [loadingStats, setLoadingStats] = useState(true);
 
+
   document.title = "All Blood Donation Request"
+
+
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         setLoadingStats(true)
         const res = await axios.get("https://red-connect-backend.vercel.app/api/donation-requestsall", {
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': `Bearer ${user.accessToken}`
-        }
-      }); // backend API to get all donation requests
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${user.accessToken}`
+          }
+        }); // backend API to get all donation requests
         setRequests(res.data);
         setLoadingStats(false)
       } catch (err) {
@@ -47,7 +50,7 @@ const AllBloodDonationRequests = () => {
           'authorization': `Bearer ${user.accessToken}`
         }
       });
-      setRequests(requests.filter(r => r._id === requestId ? r.status = newStatus: r));
+      setRequests(requests.filter(r => r._id === requestId ? r.status = newStatus : r));
       setLoadingStats(false)
     } catch (err) {
       console.error(err);
@@ -74,11 +77,11 @@ const AllBloodDonationRequests = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await axios.delete(`https://red-connect-backend.vercel.app/api/donation-requests/${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': `Bearer ${user.accessToken}`
-        }
-      });
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${user.accessToken}`
+          }
+        });
         setRequests(requests.filter(r => r._id !== id));
         Swal.fire({
           title: "Deleted!",
@@ -91,13 +94,14 @@ const AllBloodDonationRequests = () => {
 
   const filteredRequests = filterStatus ? requests.filter(r => r.status === filterStatus) : requests;
 
+
   // Pagination
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
   const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
   const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
 
-  if(loadingStats) return <Loading></Loading>
+  if (loadingStats) return <Loading></Loading>
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -135,7 +139,7 @@ const AllBloodDonationRequests = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRequests.map((req,index) => (
+            {currentRequests.map((req, index) => (
               <tr key={index}>
                 <td>{req.recipientName}</td>
                 <td>{req.recipientDistrict}, {req.recipientUpazila}</td>

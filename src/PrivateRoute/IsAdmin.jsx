@@ -17,6 +17,7 @@ const IsAdmin = ({ children }) => {
 
     const fetchRole = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(`https://red-connect-backend.vercel.app/role?email=${user.email}`, {
         headers: {
           'Content-Type': 'application/json',

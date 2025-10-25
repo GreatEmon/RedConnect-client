@@ -7,8 +7,9 @@ import Loading from '../../components/Loading';
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const { login, loading, setLoading } = use(AuthContext)
+  const { login } = use(AuthContext)
   const location = useLocation()
+  const [loading, setLoading] = useState()
 
   document.title = "Login - RedConnect"
 

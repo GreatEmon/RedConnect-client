@@ -6,9 +6,9 @@ import { AuthContext } from '../context/AuthProvider';
 import Sidebar from '../components/Sidebar';
 
 const DashboardLayout = () => {
-  const {user, loading} = use(AuthContext)
+  const {user} = use(AuthContext)
 
-  if(loading) return <Loading></Loading>
+  // if(loading) return <Loading></Loading>
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}

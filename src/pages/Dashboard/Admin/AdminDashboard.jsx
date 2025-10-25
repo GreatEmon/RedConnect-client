@@ -3,6 +3,9 @@ import { FaUsers, FaDonate, FaHandHoldingMedical } from "react-icons/fa";
 import axios from "axios";
 import {AuthContext} from '../../../context/AuthProvider'
 import Loading from '../../../components/Loading'
+import DonationChart from "../../../Utils/DonationChart";
+import BloodGroupChart from "../../../Utils/BloodGroupChart";
+import DonationStatusChart from "../../../Utils/DonationStatusChart";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -12,6 +15,7 @@ const AdminDashboard = () => {
   });
   const [loadingStats, setLoadingStats] = useState(true);
   const {role, roleLoading, user} = use(AuthContext)
+
 
   document.title = "Admin Dashboard"
 
@@ -43,7 +47,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Welcome Section */}
-      <h2 className="text-3xl font-bold mb-6 text-gray-700">Welcome, {role === "admin " ? "Admin!" : "Volunteer!"}</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-700">Welcome, {role === "admin" ? "Admin!" : "Volunteer!"}</h2>
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -73,6 +77,11 @@ const AdminDashboard = () => {
             <p className="text-gray-500">Total Donation Requests</p>
           </div>
         </div>
+      </div>
+      <DonationChart></DonationChart>
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-2 mt-5">
+      <BloodGroupChart></BloodGroupChart>
+      <DonationStatusChart></DonationStatusChart>
       </div>
 
   

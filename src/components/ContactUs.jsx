@@ -13,12 +13,12 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Contact form submitted:', formData);
+    alert('Contact form submitted');
     setFormData({ name: '', email: '', message: '' });
   };
 
   return (
-    <section className="py-20 bg-red-50">
+    <section className="py-20 bg-red-50 mb-5 mt-20 rounded-3xl">
       <div className="md:px-20">
         <h2 className="text-4xl font-bold text-center text-red-600 mb-12">
           Contact Us
